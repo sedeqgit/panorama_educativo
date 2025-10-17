@@ -1,0 +1,26 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '@fontsource/hanken-grotesk';
+
+h1 {
+    font-weight: 700;
+}
+h2 {
+    font-weight: 600;
+}
+body {
+    font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.dropdown-item {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+}
