@@ -4,6 +4,16 @@
 
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
+@php
+    function calculate_percentage($number,$total){
+        return round(($number / $total) * 100, 2);
+    }
+    $total=0;
+    foreach ($totals as $sustenancetype => $data) {
+        $total+=$data['male_students'] + $data['female_students'];
+    }
+@endphp
+
 @section(section: 'content')
     <center>
         <h2>Alumnos atendidos por tipo o nivel educativo y por sostenimiento</h2>
@@ -32,41 +42,49 @@
                             <td>{{ $level }}</td>
                         @endif
                         @php
-                            $total=0;
+                            $subtotal=0;
                             foreach ($sustenancetypes as $sustenancetype => $data) {
-                                $total+=$data['male_students'] + $data['female_students'];
+                                $subtotal+=$data['male_students'] + $data['female_students'];
                             }
                         @endphp
-                        <td class="text-center">{{ number_format($sustenancetypes["Público"]['male_students'] + $sustenancetypes["Público"]['female_students']) }}</td>
-                        <td class="text-center">{{ number_format($sustenancetypes["Privado"]['male_students'] + $sustenancetypes["Privado"]['female_students']) }}</td>
-                        <td class="text-center">{{ number_format($total) }}</td>
+                        @foreach ($sustenancetypes as $sustenancetype => $data)
+                            <td class="text-center">
+                                {{ number_format($data['male_students'] + $data['female_students']) }}
+                                <br>
+                                {{ calculate_percentage($data['male_students'] + $data['female_students'],$subtotal) }}%
+                            </td>
+                        @endforeach
+                        <td class="text-center">
+                            {{ number_format($subtotal) }}
+                            <br>
+                            {{ calculate_percentage($subtotal,$total) }}%
+                        </td>
                     </tr>
                 @endif
             @endforeach
+            <tr>
+                <td>Totales</td>
+                @foreach ($totals as $sustenancetype => $data)
+                    <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
+                @endforeach
+                <td class="text-center">{{ number_format($total) }}</td>
+            </tr>
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="7">
-                    @if (isset($statistics["Media Superior"]) || isset($statistics["Superior"]))
-                        * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
-                        <br>
-                    @endif
-                    @if (isset($statistics["Superior"]))
-                        ** Incluye TSU, Licenciatura y Posgrado
-                    @endif
+                    * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
+                    <br>
+                    ** Incluye TSU, Licenciatura y Posgrado
                 </td>
             </tr>
         </tfoot>
     </table>
     <div class="position-absolute start-50 translate-middle-x">
         <canvas id="students_school_level_sustenance" class="bar-chart m-auto"></canvas>
-        @if (isset($statistics["Media Superior"]) || isset($statistics["Superior"]))
-            * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
-            <br>
-        @endif
-        @if (isset($statistics["Superior"]))
-            ** Incluye TSU, Licenciatura y Posgrado
-        @endif
+        * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
+        <br>
+        ** Incluye TSU, Licenciatura y Posgrado
     </div>
     <script type="module">
         let labels=[]
@@ -109,6 +127,28 @@
             data: students_school_level_sustenance,
             options: {
                 responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Nivel educativo",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Alumnos atendidos",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
                 plugins: {
                     datalabels: {
                         anchor: "end",

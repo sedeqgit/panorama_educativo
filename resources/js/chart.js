@@ -36,7 +36,14 @@ Chart.register({
             chart.data.datasets.forEach(val => max += val);
             chart.config.options.scales.y.max=max;
             chart.config.options.scales.x.display=false;
-            chart.config.options.scales.y.display=false;
+            chart.config.options.scales.y.ticks.display=false;
+            chart.config.options.scales.y.border.display=false;
+            chart.config.options.scales.y.grid={
+                display: false,
+                drawBorder: false,
+                drawTicks: false,
+            };
+            chart.legend.position="right";
         }
     }
 })
@@ -59,7 +66,7 @@ Chart.defaults.plugins.datalabels.display = ctx => !(ctx.chart.config.type=="pie
 // Configuración de fuentes
 Chart.defaults.font.family=font_family;
 Chart.defaults.plugins.datalabels.font.weight=900;
-Chart.defaults.plugins.datalabels.font.size=10;
+Chart.defaults.plugins.datalabels.font.size=11;
 Chart.defaults.plugins.outlabels.font.size=12;
 Chart.defaults.plugins.outlabels.font.weight=900;
 

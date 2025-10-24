@@ -1,24 +1,26 @@
 @extends('layouts.app')
 
-@section('title','Alumnos por Subsistema en educación Media Superior')
+@section('title','Alumnos por Subsistema en Educación Media Superior')
 
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @section('content')
     <center>
-        <h2>Alumnos por Subsistema en educación Media Superior</h2>
+        <h2>Alumnos por Subsistema en Educación Media Superior</h2>
     </center>
     <div>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Municipio</th>
-                <th colspan="{{ count($subsystems) }}">Subsistema</th>
+                <th colspan="{{ count($subsystems)-1 }}">Subsistema</th>
                 <th rowspan="2">Total</th>
             </tr>
             <tr>
                 @foreach($subsystems as $subsystem)
-                    <th>{{ $subsystem }}</th>
+                    @if ($subsystem!="Abierta")
+                        <th>{{ $subsystem }}</th>
+                    @endif
                 @endforeach
             </tr>
         </thead>
@@ -28,12 +30,20 @@
                     <td>{{ $municipality }}</td>
                     @php
                         $municipality_total=0;
-                        foreach ($subsystems as $subsystem => $data){
-                            $students=$data['male_students'] + $data['female_students'];
-                            echo '<td class="text-center">'.number_format($students).'</td>';
-                            $municipality_total+=$students;
-                        }
                     @endphp
+                    @foreach ($subsystems as $subsystem => $data)
+                        @if ($subsystem!="Abierta")
+                            @php
+                                $students=$data['male_students'] + $data['female_students'];
+                                $municipality_total+=$students;
+                            @endphp
+                            @if($students>0)
+                                <td class="text-center">{{ number_format($students) }}</td>
+                            @else
+                                <td class="text-center"></td>
+                            @endif
+                        @endif
+                    @endforeach
                     <td class="text-center">{{ number_format($municipality_total) }}</td>
                 </tr>
             @endforeach
@@ -42,11 +52,17 @@
                 @php
                     $municipality_total=0;
                     foreach ($totals_by_subsystem as $subsystem => $data){
-                        $students=$data['male_students'] + $data['female_students'];
-                        echo '<td class="text-center">'.number_format($students).'</td>';
-                        $municipality_total+=$students;
+                        if ($subsystem!="Abierta"){
+                            $students=$data['male_students'] + $data['female_students'];
+                            $municipality_total+=$students;
+                        }
                     }
                 @endphp
+                @foreach ($totals_by_subsystem as $subsystem => $data)
+                    @if ($subsystem!="Abierta")
+                        <td class="text-center">{{ number_format($students) }}</td>
+                    @endif
+                @endforeach
                 <td class="text-center">{{ number_format($municipality_total) }}</td>
             </tr>
         </tbody>
@@ -56,14 +72,25 @@
             </tr>
         </tfoot>
     </table>
-    <canvas id="students_high_school_subsystems" class="bar-chart m-auto"></canvas>
+    <div class="position-absolute start-50 translate-middle-x">
+        <canvas id="students_high_school_subsystems" class="bar-chart m-auto"></canvas>
+        * CAED: Centro de Atención para Estudiantes con Discapacidad.
+        <br>
+        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
+    </div>
     <script type="module">
         let labels=[];
         let data=[];
 
         @foreach ($totals_by_subsystem as $subsystem => $data)
-            labels.push("{{ $subsystem }}");
-            data.push({{ $data['male_students'] + $data['female_students'] }});
+            @if ($subsystem!="Abierta")
+                @if ($subsystem=="CAED")
+                    labels.push("{{ $subsystem }} *");
+                @else
+                    labels.push("{{ $subsystem }}");
+                @endif
+                data.push({{ $data['male_students'] + $data['female_students'] }});
+            @endif
         @endforeach
         
         let students_high_school_subsystems={

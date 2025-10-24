@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $level)
+
+
+@section('title', $title)
 
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
@@ -18,19 +20,22 @@
 
 @section(section: 'content')
     <center>
-        <h2>Educación {{ $level }} por tipo de sostenimiento</h2>
+        <h2>{{ $title }}</h2>
     </center>
     <div class="position-absolute start-50 translate-middle-x container">
         <div class="row">
             <div class="col">
                 <p>Total {{ $campusesOrInstitutions }}*: {{ number_format($schools) }}</p>
-                <canvas id="schools_sustenance" class="stacked-bar-chart"></canvas>
-                <canvas id="schools_sustenance_ratio"></canvas>
+                <canvas id="schools_sustenance" class="stacked-bar-chart my-4"></canvas>
+                <canvas id="schools_sustenance_ratio" class="my-4"></canvas>
             </div>
             <div class="col">
+                <center>
+                    <h2></h2>
+                </center>
                 <p>Total alumnos: {{ number_format($students) }}</p>
-                <canvas id="students_school_sustenance" class="stacked-bar-chart"></canvas>
-                <canvas id="students_school_sustenance_ratio"></canvas>
+                <canvas id="students_school_sustenance" class="stacked-bar-chart my-4"></canvas>
+                <canvas id="students_school_sustenance_ratio" class="my-4"></canvas>
             </div>
         </div>
         <div class="row">
@@ -112,7 +117,7 @@
             }]
         }
 
-        new Chart("students_school_sustenance", {
+        const s1 = new Chart("students_school_sustenance", {
             type: "bar",
             data: students_school_sustenance,
             options: {
@@ -129,11 +134,16 @@
                         stacked: true
                     },
                     y: {
-                        stacked: true
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: "Cantidad de alumnos"
+                        }
                     }
                 }
             }
         });
+        console.log(s1)
 
         new Chart("schools_sustenance", {
             type: "bar",
@@ -152,7 +162,11 @@
                         stacked: true
                     },
                     y: {
-                        stacked: true
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: "Cantidad de {{ $campusesOrInstitutions }}"
+                        }
                     }
                 }
             }

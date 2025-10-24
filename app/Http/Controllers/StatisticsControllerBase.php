@@ -136,11 +136,13 @@ class StatisticsControllerBase extends Controller
                                         $schools=DB::table($this->database_schema.$this->ms_plantel)->where("cv_mun","=",($i+1))->where("cv_motivo","=","0")->where($subcontrol_condition)->pluck("cct_ins_pla")->values()->toArray();
                                         break;
                                     case "Superior":
-                                        $schools=DB::table($this->database_schema.$this->sup_escuela)->where("cv_mun","=",($i+1))->where("cv_motivo","=","0")->where($subcontrol_condition)->pluck("cct_ins_pla")->values()->toArray();
+                                        $schools=DB::table($this->database_schema.$this->sup_escuela)->where("cv_mun","=",($i+1))->where("cv_motivo","=","0")->where($subcontrol_condition)->pluck("cct_ins_pla")->unique()->values()->toArray();
                                         break;
                                 }
                                 $query->where("cv_mun","=",($i+1))->where($subcontrol_condition)->where($type_condition($query));
                                 $data = $query->select($selects)->first();
+                                if ($type=="gral_dir") $type = "General";
+                                if ($type=="doc") $type = "total";
                                 if (!isset($this->statistics[$municipality])) $this->statistics[$municipality] = [];
                                 if (!isset($this->statistics[$municipality][$level])) $this->statistics[$municipality][$level] = [];
                                 if (!isset($this->statistics[$municipality][$level][$type])) $this->statistics[$municipality][$level][$type] = [];
@@ -163,7 +165,41 @@ class StatisticsControllerBase extends Controller
         }
     }
 
-    private function getStatisticsByLevels(){
+    private function getStatisticsOfTotals(){
+        $statistics_of_totals = [];
+        $high_schools_universities = [];
+        foreach ($this->high_schools_universities as $municipality => $levels){
+            foreach ($levels as $level => $controls){
+                foreach ($controls as $control => $subcontrol){
+                    foreach ($subcontrol as $schools) {
+                        if(!isset($high_schools_universities[$level])) $high_schools_universities[$level] = 0;
+                        $high_schools_universities[$level]+=$schools;
+                    }
+                }
+            }
+        }
+        foreach ($this->statistics as $municipality => $levels){
+            foreach($levels as $level => $types){
+                foreach ($types as $type => $controls){
+                    foreach ($controls as $control => $subcontrols){
+                        foreach ($subcontrols as $subcontrol => $data){
+                            foreach ($data as $key => $value) {
+                                if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
+                                    $statistics_of_totals[$key] = $high_schools_universities[$level];
+                                } elseif ($level == "Especial (USAER)" && ($key=="female_students" || $key=="male_students" || $key=="school_count")){
+                                } else {
+                                    $statistics_of_totals[$key] = ($statistics_of_totals[$key] ?? 0) + ($data[$key]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $statistics_of_totals;
+    }
+
+    private function getStatisticsOfTotalsByLevels(){
         $statistics_of_totals = [];
         $high_schools_universities = [];
         foreach ($this->high_schools_universities as $municipality => $levels){
@@ -197,7 +233,7 @@ class StatisticsControllerBase extends Controller
         return $statistics_of_totals;
     }
 
-    private function getStatisticsByLevelsAndControl(){
+    private function getStatisticsOfTotalsByLevelsAndControl(){
         $statistics_of_totals = [];
         $high_schools_universities = [];
         foreach ($this->high_schools_universities as $municipality => $levels){
@@ -232,6 +268,85 @@ class StatisticsControllerBase extends Controller
             }
         }
         return $statistics_of_totals;
+    }
+
+    private function getStatisticsOfTotalsByControl(){
+        $statistics_of_totals = [];
+        $high_schools_universities = [];
+        foreach ($this->high_schools_universities as $municipality => $levels){
+            foreach ($levels as $level => $controls){
+                foreach ($controls as $control => $subcontrol){
+                    foreach ($subcontrol as $schools) {
+                        if(!isset($high_schools_universities[$control])) $high_schools_universities[$control] = 0;
+                        $high_schools_universities[$control]+=$schools;
+                    }
+                }
+            }
+        }
+        $public=true;
+        $private=true;
+        foreach($this->statistics as $municipality => $levels){
+            foreach($levels as $level => $types){
+                foreach ($types as $type => $controls){
+                    foreach ($controls as $control => $subcontrols){
+                        foreach ($subcontrols as $subcontrol => $data){
+                            foreach ($data as $key => $value) {
+                                if (!isset($statistics_of_totals[$control])) $statistics_of_totals[$control] = [];
+                                if (($level == "Media Superior" || $level == "Superior") && $key == "school_count"){
+                                    if (($control=="Público" && $public) || ($control=="Privado" && $private)){
+                                        $statistics_of_totals[$control][$key] += $high_schools_universities[$control];
+                                        if ($control=="Público") $public=false;
+                                        if ($control=="Privado") $private=false;
+                                    }
+                                }  elseif ($level == "Especial (USAER)" && ($key=="female_students" || $key=="male_students" || $key=="school_count")){
+                                } else {
+                                    $statistics_of_totals[$control][$key] = ($statistics_of_totals[$control][$key] ?? 0) + ($data[$key]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $statistics_of_totals;
+    }
+
+    private function getStatisticsOfLevel($level_to_look_up){
+        $statistics_of_level = [];
+        $high_schools_universities = 0;
+        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
+            foreach ($this->high_schools_universities as $municipality => $levels){
+                foreach ($levels as $level => $controls){
+                    if ($level==$level_to_look_up) {
+                        foreach ($controls as $control => $subcontrol){
+                            foreach ($subcontrol as $schools) {
+                                $high_schools_universities+=$schools;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        foreach ($this->statistics as $municipality => $levels){
+            foreach($levels as $level => $types){
+                if ($level_to_look_up == $level) {
+                    foreach ($types as $type => $controls){
+                        foreach ($controls as $control => $subcontrols){
+                            foreach ($subcontrols as $subcontrol => $data){
+                                foreach ($data as $key => $value) {
+                                    if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
+                                        $statistics_of_level[$key] = $high_schools_universities;
+                                    } else {
+                                        $statistics_of_level[$key] = ($statistics_of_level[$key] ?? 0) + ($data[$key]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $statistics_of_level;
     }
 
     private function getStatisticsOfLevelByType($level_to_look_up){
@@ -335,6 +450,43 @@ class StatisticsControllerBase extends Controller
         return $statistics_of_level;
     }
 
+    private function getStatisticsOfLevelByTypesAndControls($level_to_look_up){
+        $statistics_of_level = [];
+        $high_schools_universities = [];
+        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
+            foreach ($this->high_schools_universities as $municipality => $levels){
+                foreach ($levels as $level => $controls){
+                    if ($level==$level_to_look_up) {
+                        foreach ($controls as $control => $subcontrol){
+                            foreach ($subcontrol as $schools) {
+                                if (!isset($high_schools_universities[$control])) $high_schools_universities[$control] = 0;
+                                $high_schools_universities[$control]+=$schools;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        foreach ($this->statistics as $municipality => $levels){
+            foreach($levels as $level => $types){
+                if ($level_to_look_up == $level) {
+                    foreach ($types as $type => $controls){
+                        foreach ($controls as $control => $subcontrols){
+                            foreach ($subcontrols as $subcontrol => $data){
+                                foreach ($data as $key => $value) {
+                                    if (!isset($statistics_of_level[$type])) $statistics_of_level[$type] = [];
+                                    if (!isset($statistics_of_level[$type][$control])) $statistics_of_level[$type][$control] = [];
+                                    $statistics_of_level[$type][$control][$key] = ($statistics_of_level[$type][$control][$key] ?? 0) + ($data[$key]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $statistics_of_level;
+    }
+
     private function getStatisticsOfLevelAndTypes($level_to_look_up, array $types_to_look_up){
         $statistics_of_level = [];
         foreach ($this->statistics as $municipality => $levels){
@@ -363,40 +515,161 @@ class StatisticsControllerBase extends Controller
     // Páginas
     public function students_teachers_gender(){
         try{
-            $statistics = $this->getStatisticsByLevels();
-            return view('students-teachers-gender', compact('statistics'));
+            $statistics = $this->getStatisticsOfTotalsByLevels();
+            $totals = $this->getStatisticsOfTotals();
+            return view('students-teachers-gender', ['statistics' => $statistics, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
     }
     public function students_school_level_sustenance(){
         try{
-            $statistics = $this->getStatisticsByLevelsAndControl();
-            return view('students-school-level-sustenance', compact('statistics'));
+            $statistics = $this->getStatisticsOfTotalsByLevelsAndControl();
+            $totals = $this->getStatisticsOfTotalsByControl();
+            return view('students-school-level-sustenance', ['statistics' => $statistics, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
     }
     public function teachers_school_level_sustenance(){
         try{
-            $statistics = $this->getStatisticsByLevelsAndControl();
-            return view('teachers-school-level-sustenance', compact('statistics'));
+            $statistics = $this->getStatisticsOfTotalsByLevelsAndControl();
+            $totals = $this->getStatisticsOfTotalsByControl();
+            return view('teachers-school-level-sustenance', ['statistics' => $statistics, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
     }
     public function schools_school_level_sustenance(){
         try{
-            $statistics = $this->getStatisticsByLevelsAndControl();
-            return view('schools-school-level-sustenance', compact('statistics'));
+            $statistics = $this->getStatisticsOfTotalsByLevelsAndControl();
+            $totals = $this->getStatisticsOfTotalsByControl();
+            return view('schools-school-level-sustenance', ['statistics' => $statistics, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
     }
     public function students_school_level_ratio(){
         try{
-            $statistics = $this->getStatisticsByLevels();
+            $statistics = $this->getStatisticsOfTotalsByLevels();
             return view('students-school-level-ratio', compact('statistics'));
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function schooled_initial(){
+        try{
+            $level = "Inicial (Escolarizado)";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function non_schooled_initial(){
+        try{
+            $level = "Inicial (No escolarizado)";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function cam(){
+        try{
+            $level = "Especial (CAM)";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function usaer(){
+        try{
+            $level = "Especial (USAER)";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function preschool(){
+        try{
+            $level = "Preescolar";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function elementary_school(){
+        try{
+            $level = "Primaria";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function middle_school(){
+        try{
+            $level = "Secundaria";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function high_school(){
+        try{
+            $level = "Media Superior";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function university(){
+        try{
+            $level = "Superior";
+            $stats1 = $this->getStatisticsOfLevelByTypesAndControls($level);
+            $stats2 = $this->getStatisticsOfLevelByControl($level);
+            $stats3 = $this->getStatisticsOfLevelByType($level);
+            $totals = $this->getStatisticsOfLevel($level);
+            return view('levels-control',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'totals' => $totals, 'level' => $level]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -405,7 +678,7 @@ class StatisticsControllerBase extends Controller
     public function students_high_school_type(){
         try{
             $statistics = $this->getStatisticsOfLevelByType("Media Superior");
-            return view('students-school-type-level-degree', ['statistics' => $statistics, "title" => 'Alumnos por tipo de bachillerato']);
+            return view('students-school-type-level-degree', ['statistics' => $statistics, "title" => 'Alumnos inscritos por tipo de bachillerato']);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -415,7 +688,7 @@ class StatisticsControllerBase extends Controller
         try{
             $level = "Media Superior";
             $statistics = $this->getStatisticsOfLevelBySubcontrol($level);
-            return view('schools-sustenance-types', ['statistics'=> $statistics,'level'=> $level]);
+            return view('schools-sustenance-types', ['statistics'=> $statistics,'level'=> $level, "title" => "Matrícula y planteles o servicios por tipo de sostenimiento en educación Media Superior"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -424,7 +697,7 @@ class StatisticsControllerBase extends Controller
     public function university_students_level_degree(){
         try{
             $statistics = $this->getStatisticsOfLevelByType('Superior');
-            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Alumnos de educación superior por nivel o grado"]);
+            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Matrícula de educación superior por nivel o grado"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -433,7 +706,7 @@ class StatisticsControllerBase extends Controller
     public function tsu_lic_students(){
         try{
             $statistics = $this->getStatisticsOfLevelAndTypes('Superior', ["Técnico Superior Universitario", "Licenciatura"]);
-            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Alumnos de educación superior (TSU y Licenciatura)"]);
+            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Matrícula de educación superior (TSU y Licenciatura)"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -442,7 +715,7 @@ class StatisticsControllerBase extends Controller
     public function pos_students(){
         try{
             $statistics = $this->getStatisticsOfLevelAndTypes('Superior', ["Especialidad","Maestría","Doctorado"]);
-            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Alumnos de posgrado"]);
+            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Matrícula en posgrado por nivel o grado"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -478,7 +751,7 @@ class StatisticsControllerBase extends Controller
         try{
             $level = "Superior";
             $statistics = $this->getStatisticsOfLevelBySubcontrol($level);
-            return view("schools-sustenance-types", ["statistics"=> $statistics, "level" => $level] );
+            return view("schools-sustenance-types", ["statistics"=> $statistics, "level" => $level, "title" => "Instituciones y matrícula por tipo de sostenimiento"] );
         } catch (\Exception $e){
             return view("page-under-construction");
         }

@@ -1,8 +1,6 @@
 .bar-chart {
-    min-height: 320px;
-    min-width: 180px;
-    max-height: 1600px;
-    max-width: 900px;
+    height: 1600px;
+    width: 900px;
 }
 .pie-chart {
     height: 900px;

@@ -14,7 +14,7 @@
 @section(section: 'content')
     <center>
         <h2>{{ $title }}</h2>
-        <p>Total de alumnos: {{ number_format($sum) }}</p>
+        <p>Matrícula total: {{ number_format($sum) }}</p>
     </center>
     <canvas id="students_high_school_type" class="pie-chart m-auto"></canvas>
     <script type="module">

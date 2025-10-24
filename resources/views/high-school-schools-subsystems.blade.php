@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title','Docentes por Subsistema en educación Media Superior')
+@section('title','Planteles por Subsistema en Educación Media Superior')
 
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @section('content')
     <center>
-        <h2>Docentes por Subsistema en educación Media Superior</h2>
+        <h2>Planteles por Subsistema en Educación Media Superior</h2>
     </center>
     <div>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
@@ -28,12 +28,18 @@
                     <td>{{ $municipality }}</td>
                     @php
                         $municipality_total=0;
-                        foreach ($subsystems as $subsystem => $data){
-                            $teachers=$data['male_teachers'] + $data['female_teachers'];
-                            echo '<td class="text-center">'.number_format($teachers).'</td>';
-                            $municipality_total+=$teachers;
-                        }
                     @endphp
+                    @foreach ($subsystems as $subsystem => $data)
+                        @php
+                            $schools=$data['school_count'];
+                            $municipality_total+=$schools;
+                        @endphp
+                        @if($schools>0)
+                            <td class="text-center">{{ number_format($schools) }}</td>
+                        @else
+                            <td class="text-center"></td>
+                        @endif
+                    @endforeach
                     <td class="text-center">{{ number_format($municipality_total) }}</td>
                 </tr>
             @endforeach
@@ -42,9 +48,9 @@
                 @php
                     $municipality_total=0;
                     foreach ($totals_by_subsystem as $subsystem => $data){
-                        $teachers=$data['male_teachers'] + $data['female_teachers'];
-                        echo '<td class="text-center">'.number_format($teachers).'</td>';
-                        $municipality_total+=$teachers;
+                        $schools=$data['school_count'];
+                        echo '<td class="text-center">'.number_format($schools).'</td>';
+                        $municipality_total+=$schools;
                     }
                 @endphp
                 <td class="text-center">{{ number_format($municipality_total) }}</td>
@@ -52,21 +58,30 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="{{ count($subsystems)+2 }}">* Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto</td>
+                <td colspan="{{ count($subsystems)+2 }}">* Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto</td>
             </tr>
         </tfoot>
     </table>
-    <canvas id="teachers_high_school_subsystems" class="bar-chart m-auto"></canvas>
+    <div class="position-absolute start-50 translate-middle-x">
+        <canvas id="schools_high_school_subsystems" class="bar-chart m-auto"></canvas>
+        * CAED: Centro de Atención para Estudiantes con Discapacidad.
+        <br>
+        ** En el total de Escuelas de Media Superior se cuantifican planteles
+    </div>
     <script type="module">
         let labels=[];
         let data=[];
 
         @foreach ($totals_by_subsystem as $subsystem => $data)
-            labels.push("{{ $subsystem }}");
-            data.push({{ $data['male_teachers'] + $data['female_teachers'] }});
+            @if ($subsystem=="CAED")
+                labels.push("{{ $subsystem }} *");
+            @else
+                labels.push("{{ $subsystem }}");
+            @endif
+            data.push({{ $data['school_count'] }});
         @endforeach
         
-        let teachers_high_school_subsystems={
+        let schools_high_school_subsystems={
             labels: labels,
             datasets: [
                 {
@@ -76,9 +91,9 @@
         }
         console.log
 
-        new Chart("teachers_high_school_subsystems", {
+        new Chart("schools_high_school_subsystems", {
             type: "bar",
-            data: teachers_high_school_subsystems,
+            data: schools_high_school_subsystems,
             options: {
                 responsive: true,
                 plugins: {

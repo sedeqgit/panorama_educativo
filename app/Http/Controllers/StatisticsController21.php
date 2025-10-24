@@ -40,7 +40,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 ]
             ],
             "Inicial (No escolarizado)"=> [
-                "ne"=> [
+                "total"=> [
                     $this->ini_ne => [
                         "school_count" => "cv_cct",
                         "male_students" => "V370",
@@ -178,7 +178,7 @@ class StatisticsController21 extends StatisticsControllerBase
                         "groups" => "V341"
                     ]
                 ],
-                "tec" => [
+                "Técnica" => [
                     $this->sec_gral => [
                         "school_count" => "cv_cct",
                         "male_students" => "V306+V314",
@@ -224,7 +224,7 @@ class StatisticsController21 extends StatisticsControllerBase
             "Superior"=> [
                 "Técnico Superior Universitario" => [
                     $this->sup_carrera => [
-                        "school_count" => "cct_ins_pla",
+                        "school_count" => "DISTINCT cct_ins_pla",
                         "male_students" => "V175",
                         "female_students" => "V176",
                         "male_teachers" => "0",
@@ -235,7 +235,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 ],
                 "Licenciatura" => [
                     $this->sup_carrera => [
-                        "school_count" => "cct_ins_pla",
+                        "school_count" => "DISTINCT cct_ins_pla",
                         "male_students" => "V175",
                         "female_students" => "V176",
                         "male_teachers" => "0",
@@ -246,7 +246,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 ],
                 "Especialidad" => [
                     $this->sup_posgrado => [
-                        "school_count" => "cct_ins_pla",
+                        "school_count" => "DISTINCT cct_ins_pla",
                         "male_students" => "V140",
                         "female_students" => "V141",
                         "male_teachers" => "0",
@@ -257,7 +257,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 ],
                 "Maestría" => [
                     $this->sup_posgrado => [
-                        "school_count" => "cct_ins_pla",
+                        "school_count" => "DISTINCT cct_ins_pla",
                         "male_students" => "V140",
                         "female_students" => "V141",
                         "male_teachers" => "0",
@@ -268,7 +268,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 ],
                 "Doctorado" => [
                     $this->sup_posgrado => [
-                        "school_count" => "cct_ins_pla",
+                        "school_count" => "DISTINCT cct_ins_pla",
                         "male_students" => "V140",
                         "female_students" => "V141",
                         "male_teachers" => "0",
@@ -303,7 +303,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 }
             ],
             "Inicial (No escolarizado)"=> [
-                "ne" => function($q){
+                "total" => function($q){
                     $q->whereIn("cv_estatus_captura", [0,10]);
                 }
             ],
@@ -353,7 +353,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 "Telesecundaria" => function($q) {
                     $q->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","TELESECUNDARIA");
                 },
-                "tec" => function($q) {
+                "Técnica" => function($q) {
                     $q->whereIn("cv_estatus_captura", [0,10])->where("subnivel","<>","GENERAL")->where("subnivel","<>","TELESECUNDARIA");
                 },
                 "Comunitario" => function($q) {

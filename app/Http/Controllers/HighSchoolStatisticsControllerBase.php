@@ -60,7 +60,7 @@ class HighSchoolStatisticsControllerBase extends Controller
             "CAED" => function($q){
                 $q->where("subsistema_2","=","DGB");
             },
-            "Particular" => function($q){
+            "Privado" => function($q){
                 $q->where("subsistema_2","=","PARTICULAR");
             },
             "Abierta" => function($q){
@@ -72,7 +72,7 @@ class HighSchoolStatisticsControllerBase extends Controller
             "DGETAyCM" => function($q){
                 $q->where("subsistema_2","=","DGETAyCM");
             },
-            "CENADART" => function($q){
+            "CENADAC" => function($q){
                 $q->where("subsistema_2","=","IEBAS");
             },
             "COBAQ" => function($q){
@@ -92,7 +92,7 @@ class HighSchoolStatisticsControllerBase extends Controller
             foreach ($this->queries_data_structure as $type => $tablenames) {
                 foreach ($tablenames as $tablename => $colsmap) {
                     $type_condition=$this->queries_rules[$type];
-                    foreach ($this->subsystems_rules as $subsystem => $subsytem_filter){
+                    foreach ($this->subsystems_rules as $subsystem => $subsystem_filter){
                         $query = DB::table($this->database_schema.$tablename);
                         $selects = [];
                         foreach ($colsmap as $col => $colname) {
@@ -104,7 +104,7 @@ class HighSchoolStatisticsControllerBase extends Controller
                         }
                         $schools=DB::table($this->database_schema.$this->ms_plantel)->where("cv_mun","=",($i+1))->where("cv_motivo","=","0")->pluck("cct_ins_pla")->values()->toArray();
                         if (!isset($this->schools[$municipality])) $this->schools[$municipality] = count($schools);
-                        $query->where("cv_mun","=",($i+1))->where($type_condition($query))->where($subsytem_filter);
+                        $query->where("cv_mun","=",($i+1))->where($type_condition($query))->where($subsystem_filter);
                         $data = $query->select($selects)->first();
                         if (!isset($this->statistics[$municipality])) $this->statistics[$municipality] = [];
                         if (!isset($this->statistics[$municipality][$subsystem])) $this->statistics[$municipality][$subsystem] = [];
@@ -136,6 +136,18 @@ class HighSchoolStatisticsControllerBase extends Controller
         return $totals_by_subsystem;
     }
 
+    private function getStatisticsOfTotals(){
+        $totals = [];
+        foreach ($this->statistics as $municipality => $subsystems) {
+            foreach ($subsystems as $subsystem => $data) {
+                foreach ($data as $key => $value) {
+                    $totals[$key] = ($totals[$key] ?? 0) + ($value);
+                }
+            }
+        }
+        return $totals;
+    }
+
     public function students_subsystems(){
         try{
             $subsystems = $this->getSubsystems();
@@ -161,6 +173,15 @@ class HighSchoolStatisticsControllerBase extends Controller
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
             return view('schools-high-school-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
+    public function students_new_graduate(){
+        try{
+            $statistics = $this->getStatisticsBySubsystems();
+            return view('high-school-students-new-graduate', compact('statistics'));
         } catch (\Exception $e){
             return view('page-under-construction');
         }

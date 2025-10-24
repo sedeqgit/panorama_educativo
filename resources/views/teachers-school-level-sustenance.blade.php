@@ -4,6 +4,16 @@
 
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
+@php
+    function calculate_percentage($number,$total){
+        return round(($number / $total) * 100, 2);
+    }
+    $total=0;
+    foreach ($totals as $sustenancetype => $data) {
+        $total+=$data['male_teachers'] + $data['female_teachers'];
+    }
+@endphp
+
 @section(section: 'content')
     <center>
         <h2>Docentes por tipo o nivel educativo y por sostenimiento</h2>
@@ -31,40 +41,48 @@
                         <td>{{ $level }}</td>
                     @endif
                     @php
-                        $total=0;
+                        $subtotal=0;
                         foreach ($sustenancetypes as $sustenancetype => $data) {
-                            $total+=$data['male_teachers'] + $data['female_teachers'];
+                            $subtotal+=$data['male_teachers'] + $data['female_teachers'];
                         }
                     @endphp
-                    <td>{{ number_format($sustenancetypes["Público"]['male_teachers'] + $sustenancetypes["Público"]['female_teachers']) }}</td>
-                    <td>{{ number_format($sustenancetypes["Privado"]['male_teachers'] + $sustenancetypes["Privado"]['female_teachers']) }}</td>
-                    <td>{{ number_format($total) }}</td>
+                    @foreach ($sustenancetypes as $sustenancetype => $data)
+                        <td class="text-center">
+                            {{ number_format($data['male_teachers'] + $data['female_teachers']) }}
+                            <br>
+                            {{ calculate_percentage($data['male_teachers'] + $data['female_teachers'],$subtotal) }}%
+                        </td>
+                    @endforeach
+                    <td class="text-center">
+                        {{ number_format($subtotal) }}
+                        <br>
+                        {{ calculate_percentage($subtotal,$total) }}%
+                    </td>
                 </tr>
             @endforeach
+            <tr>
+                <td>Totales</td>
+                @foreach ($totals as $sustenancetype => $data)
+                    <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
+                @endforeach
+                <td class="text-center">{{ number_format($total) }}</td>
+            </tr>
         </tbody>
         <tfoot class="table-borderless">
             <tr>
                 <td colspan="7">
-                    @if (isset($statistics["Media Superior"]) || isset($statistics["Superior"]))
-                        * Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto
-                        <br>
-                    @endif
-                    @if (isset($statistics["Superior"]))
-                        ** Incluye TSU, Licenciatura y Posgrado
-                    @endif
+                    * Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto
+                    <br>
+                    ** Incluye TSU, Licenciatura y Posgrado
                 </td>
             </tr>
         </tfoot>
     </table>
     <div class="position-absolute start-50 translate-middle-x">
         <canvas id="teachers_school_level_sustenance" class="bar-chart m-auto"></canvas>
-        @if (isset($statistics["Media Superior"]) || isset($statistics["Superior"]))
-            * Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto
-            <br>
-        @endif
-        @if (isset($statistics["Superior"]))
-            ** Incluye TSU, Licenciatura y Posgrado
-        @endif
+        * Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto
+        <br>
+        ** Incluye TSU, Licenciatura y Posgrado
     </div>
     <script type="module">
         let labels=[]
@@ -99,6 +117,28 @@
             data: teachers_school_level_sustenance,
             options: {
                 responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Nivel educativo",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Cantidad de docentes",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
                 plugins: {
                     datalabels: {
                         anchor: "end",

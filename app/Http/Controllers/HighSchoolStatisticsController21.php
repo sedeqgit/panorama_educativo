@@ -14,6 +14,10 @@ class HighSchoolStatisticsController21 extends HighSchoolStatisticsControllerBas
                     "school_count" => "distinct cct_ins_pla",
                     "male_students" => "V395",
                     "female_students" => "V396",
+                    "new_male_students" => "V344",
+                    "new_female_students" => "V345",
+                    "graduate_male_students" => "V176",
+                    "graduate_female_students" => "V177",
                     "male_teachers" => "V958",
                     "female_teachers" => "V959",
                     "groups" => "V401"
@@ -24,6 +28,10 @@ class HighSchoolStatisticsController21 extends HighSchoolStatisticsControllerBas
                     "school_count" => "distinct cct_ins_pla",
                     "male_students" => "V470",
                     "female_students" => "V471",
+                    "new_male_students" => "V412",
+                    "new_female_students" => "V413",
+                    "graduate_male_students" => "V202",
+                    "graduate_female_students" => "V203",
                     "male_teachers" => "V1057",
                     "female_teachers" => "V1058",
                     "groups" => "V476"
