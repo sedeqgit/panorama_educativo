@@ -137,13 +137,16 @@
                         stacked: true,
                         title: {
                             display: true,
-                            text: "Cantidad de alumnos"
+                            text: "Cantidad de alumnos",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
                         }
                     }
                 }
             }
         });
-        console.log(s1)
 
         new Chart("schools_sustenance", {
             type: "bar",
@@ -165,7 +168,11 @@
                         stacked: true,
                         title: {
                             display: true,
-                            text: "Cantidad de {{ $campusesOrInstitutions }}"
+                            text: "Cantidad de {{ $campusesOrInstitutions }}",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
                         }
                     }
                 }

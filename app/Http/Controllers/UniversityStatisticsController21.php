@@ -100,6 +100,44 @@ class UniversityStatisticsController21 extends UniversityStatisticsControllerBas
             ]
         ];
 
+        $this->queries_data_structure_by_schools = [
+            "Técnico Superior Universitario" => [
+                $this->sup_carrera => [
+                    "school_name" => "nombre_ins_pla",
+                    "male_students" => "V175",
+                    "female_students" => "V176",
+                ]
+            ],
+            "Licenciatura" => [
+                $this->sup_carrera => [
+                    "school_name" => "nombre_ins_pla",
+                    "male_students" => "V175",
+                    "female_students" => "V176",
+                ]
+            ],
+            "Especialidad" => [
+                $this->sup_posgrado => [
+                    "school_name" => "nombre_ins_pla",
+                    "male_students" => "V140",
+                    "female_students" => "V141",
+                ]
+            ],
+            "Maestría" => [
+                $this->sup_posgrado => [
+                    "school_name" => "nombre_ins_pla",
+                    "male_students" => "V140",
+                    "female_students" => "V141",
+                ]
+            ],
+            "Doctorado" => [
+                $this->sup_posgrado => [
+                    "school_name" => "nombre_ins_pla",
+                    "male_students" => "V140",
+                    "female_students" => "V141",
+                ]
+            ]
+        ];
+
         $this->queries_rules = [
             "Técnico Superior Universitario" => function($q) {
                 $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","4%");

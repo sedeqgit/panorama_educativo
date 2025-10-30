@@ -62,7 +62,8 @@
             </tr>
         </tfoot>
     </table>
-    <div class="position-absolute start-50 translate-middle-x">
+    <div class="position-absolute start-50 translate-middle-x my-4">
+        <center>Total de docentes: {{ number_format($municipality_total) }}</center>
         <canvas id="teachers_high_school_subsystems" class="bar-chart m-auto"></canvas>
         * CAED: Centro de Atención para Estudiantes con Discapacidad.
         <br>
@@ -89,13 +90,34 @@
                 }
             ]
         }
-        console.log
 
         new Chart("teachers_high_school_subsystems", {
             type: "bar",
             data: teachers_high_school_subsystems,
             options: {
                 responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Subsistemas",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Cantidad de docentes",
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
                 plugins: {
                     datalabels: {
                         anchor: "end",

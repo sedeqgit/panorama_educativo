@@ -152,7 +152,7 @@ class HighSchoolStatisticsControllerBase extends Controller
         try{
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
-            return view('students-high-school-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+            return view('high-school-students-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -162,7 +162,7 @@ class HighSchoolStatisticsControllerBase extends Controller
         try{
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
-            return view('teachers-high-school-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+            return view('high-school-teachers-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -172,7 +172,7 @@ class HighSchoolStatisticsControllerBase extends Controller
         try{
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
-            return view('schools-high-school-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+            return view('high-school-schools-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }

@@ -88,7 +88,7 @@ class StatisticsController21 extends StatisticsControllerBase
             "Preescolar" => [
                 "General" => [
                     $this->ini_gral => [
-                        "school_count" => "SUM(0)",
+                        "school_count" => "0",
                         "male_students" => "V466",
                         "female_students" => "V472",
                         "male_teachers" => "V513+V520+V527",
