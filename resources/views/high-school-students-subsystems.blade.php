@@ -40,19 +40,19 @@
                             <td class="text-center"></td>
                         @endif
                     @endforeach
-                    <td class="text-center">{{ number_format($municipality_total) }}</td>
+                    <td class="text-center important-column">{{ number_format($municipality_total) }}</td>
                 </tr>
             @endforeach
-            <tr>
+            <tr class="important-row">
                 <td>Total</td>
                 @php
                     $municipality_total=0;
-                    foreach ($totals_by_subsystem as $subsystem => $data){
-                        $students=$data['male_students'] + $data['female_students'];
-                        $municipality_total+=$students;
-                    }
                 @endphp
                 @foreach ($totals_by_subsystem as $subsystem => $data)
+                    @php
+                        $students=$data['male_students'] + $data['female_students'];
+                        $municipality_total+=$students;
+                    @endphp
                     <td class="text-center">{{ number_format($students) }}</td>
                 @endforeach
                 <td class="text-center">{{ number_format($municipality_total) }}</td>

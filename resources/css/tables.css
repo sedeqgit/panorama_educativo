@@ -1,4 +1,16 @@
-.qro-table-header thead {
+.table.qro-table-header thead {
+    --bs-table-bg: #242B57;
+    --bs-table-color: #fff;
+}
+
+.table tr.important-row {
     --bs-table-bg: #4996C6;
     --bs-table-color: #fff;
+    font-weight: bold;
+}
+
+.table td.important-column {
+    --bs-table-bg: #4996C6;
+    --bs-table-color: #fff;
+    font-weight: bold;
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\HighSchoolStatistics;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HighSchoolStatisticsControllerBase extends Controller
+class Base extends Controller
 {
     // Variables de estructura y traducción de bases de datos
     protected array $queries_data_structure, $queries_rules;
@@ -63,9 +64,6 @@ class HighSchoolStatisticsControllerBase extends Controller
             "Privado" => function($q){
                 $q->where("subsistema_2","=","PARTICULAR");
             },
-            "Abierta" => function($q){
-                $q->where("subsistema_2","=","PREPA ABIERTA ESTATAL");
-            },
             "CONALEP" => function($q){
                 $q->where("subsistema_2","=","CONALEP");
             },
@@ -76,7 +74,7 @@ class HighSchoolStatisticsControllerBase extends Controller
                 $q->where("subsistema_2","=","IEBAS");
             },
             "COBAQ" => function($q){
-                $q->whereIn("subsistema_2",["COBACH", "EMSAD"]);
+                $q->whereIn("subsistema_2",["COBACH", "EMSAD", "PREPA ABIERTA ESTATAL"]);
             },
             "CECyTEQ" => function($q){
                 $q->where("subsistema_2","=","CECYTE");

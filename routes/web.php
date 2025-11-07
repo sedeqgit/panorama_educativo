@@ -11,52 +11,50 @@ Route::get('/', function(){return view('welcome');})->name('welcome-page');
 // Controladores de la estadísticas escolares
 $statisticsControllers = [
     '2018-2019' => [
-        'general' => App\Http\Controllers\StatisticsController18::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController18::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController18::class
+        'general' => App\Http\Controllers\Statistics\Controller18::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller18::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller18::class,
     ],
     '2019-2020' => [
-        'general' => App\Http\Controllers\StatisticsController19::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController19::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController19::class
+        'general' => App\Http\Controllers\Statistics\Controller19::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller19::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller19::class
     ],
     '2020-2021' => [
-        'general' => App\Http\Controllers\StatisticsController20::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController20::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController20::class
+        'general' => App\Http\Controllers\Statistics\Controller20::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller20::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller20::class
     ],
     '2021-2022' => [
-        'general' => App\Http\Controllers\StatisticsController21::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController21::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController21::class
+        'general' => App\Http\Controllers\Statistics\Controller21::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller21::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller21::class
     ],
     '2022-2023' => [
-        'general' => App\Http\Controllers\StatisticsController22::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController22::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController22::class
+        'general' => App\Http\Controllers\Statistics\Controller22::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller22::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller22::class
     ],
     '2023-2024' => [
-        'general' => App\Http\Controllers\StatisticsController23::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController23::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController23::class
+        'general' => App\Http\Controllers\Statistics\Controller23::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller23::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller23::class
     ],
     '2024-2025' => [
-        'general' => App\Http\Controllers\StatisticsController24::class,
-        'high_school' => App\Http\Controllers\HighSchoolStatisticsController24::class,
-        'university' => App\Http\Controllers\UniversityStatisticsController24::class
+        'general' => App\Http\Controllers\Statistics\Controller24::class,
+        'high_school' => App\Http\Controllers\HighSchoolStatistics\Controller24::class,
+        'university' => App\Http\Controllers\UniversityStatistics\Controller24::class
     ]
 ];
 
 // Rutas de las estadísticas escolares por año
 foreach ($statisticsControllers as $period => $controllers){
     Route::prefix($period)->name('period_'.$period)->group(function() use ($controllers, $period) {
-        Route::get('/', function()  use ($period){
+        Route::get('/', function() use ($period){
             $allRoutes = collect(Route::getRoutes())->map(function($route){
                 return [
                     'uri' => $route->uri(),
-                    'name' => $route->getName(),
-                    'methods' => $route->methods(),
-                    'action' => $route->getActionName()
+                    'name' => $route->getName()
                 ];
             });
             $periodRoutes = $allRoutes->filter(function ($route) use ($period){
@@ -111,13 +109,13 @@ foreach ($statisticsControllers as $period => $controllers){
             Route::prefix('superior')->name('.sup')->group(function() use ($controllers){
                 Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Superior');
                 Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Superior')->name('ft');
+                Route::get('/por-tipo-de-sostenimiento',[$controllers['general'],'universities_subcontrol'])->name('.ts');
                 Route::get('/matricula-por-nivel-o-grado', [$controllers['general'],'university_students_level_degree'])->name('.ang');
                 Route::get('/matricula-de-tsu-y-licenciatura', [$controllers['general'], 'tsu_lic_students'])->name('.atl');
                 Route::get('/matricula-de-posgrado', [$controllers['general'], 'pos_students'])->name('.ap');
                 Route::get('/carreras',[$controllers['general'],'university_study_programs'])->name('.c');
                 Route::get('/carreras-de-tsu-y-licenciaturas',[$controllers['general'],'tsu_lic_study_programs'])->name('.ctl');
-                Route::get('/programas-de-posgrado',[$controllers['general'],'pos_study_programs'])->name('.pp');
-                Route::get('/por-tipo-de-sostenimiento',[$controllers['general'],'universities_subcontrol'])->name('.ts');
+                Route::get('/programas-de-posgrado',[$controllers['general'],'pos_study_programs'])->name('.cpp');
                 Route::get('/carreras-matricula-nuevo-ingreso-egresados-por-campos-de-formacion-de-tsu-y-licenciatura', [$controllers['university'], 'tsu_lic_carriers_students_new_graduate'])->name('.caniecftl');
                 Route::get('/carreras-matricula-nuevo-ingreso-egresados-por-campos-de-formacion-de-posgrado', [$controllers['university'], 'pos_carriers_students_new_graduate'])->name('.caniecfp');
                 Route::get('/instituciones-con-mayor-matricula',[$controllers['university'], 'higher_enrollment_institutions'])->name('.imm');
@@ -129,7 +127,7 @@ foreach ($statisticsControllers as $period => $controllers){
         Route::get('/data-debug', [$controllers['general'], 'retrieveStatistics']);
     });
 }
-Route::get('/2021-2022/sample-charts', [App\Http\Controllers\StatisticsController21::class, 'sample_charts']);
+Route::get('/2021-2022/sample-charts', [App\Http\Controllers\Statistics\Controller21::class, 'sample_charts']);
 
 // Estadísticas historícas
 Route::get('/historico', [HistoricalStatisticsController::class, 'index']);

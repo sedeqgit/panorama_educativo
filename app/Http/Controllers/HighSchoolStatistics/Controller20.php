@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\HighSchoolStatistics;
 
 use Illuminate\Http\Request;
 
-class HighSchoolStatisticsController21 extends HighSchoolStatisticsControllerBase
+class Controller20 extends Base
 {
     public function __construct(){
-        $this->initializeDBVariables(21);
+        $this->initializeDBVariables(20);
         $this->queries_data_structure=[
             "General" => [
                 $this->ms_gral => [

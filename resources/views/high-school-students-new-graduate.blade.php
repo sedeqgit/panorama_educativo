@@ -51,18 +51,18 @@
                     <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                     <td class="text-center">{{ number_format($data['male_students']) }}</td>
                     <td class="text-center">{{ number_format($data['female_students']) }}</td>
-                    <td class="text-center">{{ calculate_percentage($data['male_students'],$data['male_students'] + $data['female_students']) }}%</td>
-                    <td class="text-center">{{ calculate_percentage($data['female_students'],$data['male_students'] + $data['female_students']) }}%</td>
+                    <td class="text-center important-column">{{ calculate_percentage($data['male_students'],$data['male_students'] + $data['female_students']) }}%</td>
+                    <td class="text-center important-column">{{ calculate_percentage($data['female_students'],$data['male_students'] + $data['female_students']) }}%</td>
                     <td class="text-center">{{ number_format($data['new_male_students'] + $data['new_female_students']) }}</td>
                     <td class="text-center">{{ number_format($data['new_male_students']) }}</td>
                     <td class="text-center">{{ number_format($data['new_female_students']) }}</td>
-                    <td class="text-center">{{ calculate_percentage($data['new_male_students'],$data['new_male_students'] + $data['new_female_students']) }}%</td>
-                    <td class="text-center">{{ calculate_percentage($data['new_female_students'],$data['new_male_students'] + $data['new_female_students']) }}%</td>
+                    <td class="text-center important-column">{{ calculate_percentage($data['new_male_students'],$data['new_male_students'] + $data['new_female_students']) }}%</td>
+                    <td class="text-center important-column">{{ calculate_percentage($data['new_female_students'],$data['new_male_students'] + $data['new_female_students']) }}%</td>
                     <td class="text-center">{{ number_format($data['graduate_male_students'] + $data['graduate_female_students']) }}</td>
                     <td class="text-center">{{ number_format($data['graduate_male_students']) }}</td>
                     <td class="text-center">{{ number_format($data['graduate_female_students']) }}</td>
-                    <td class="text-center">{{ calculate_percentage($data['graduate_male_students'],$data['graduate_male_students'] + $data['graduate_female_students']) }}%</td>
-                    <td class="text-center">{{ calculate_percentage($data['graduate_female_students'],$data['graduate_male_students'] + $data['graduate_female_students']) }}%</td>
+                    <td class="text-center important-column">{{ calculate_percentage($data['graduate_male_students'],$data['graduate_male_students'] + $data['graduate_female_students']) }}%</td>
+                    <td class="text-center important-column">{{ calculate_percentage($data['graduate_female_students'],$data['graduate_male_students'] + $data['graduate_female_students']) }}%</td>
                     @php
                         $totals['male_students'] = ($totals['male_students'] ?? 0) + ($data['male_students']);
                         $totals['female_students'] = ($totals['female_students'] ?? 0) + ($data['female_students']);
@@ -73,7 +73,7 @@
                     @endphp
                 </tr>
             @endforeach
-            <tr>
+            <tr class="important-row">
                 <td>Totales</td>
                 <td class="text-center">{{ number_format($totals['male_students'] + $totals['female_students']) }}</td>
                 <td class="text-center">{{ number_format($totals['male_students']) }}</td>

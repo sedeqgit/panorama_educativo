@@ -84,7 +84,7 @@
                                                 <a href="{{ route("period_".$period.".sec") }}" class="dropdown-item">Secundaria</a>
                                             </li>
                                             <li class="dropdown-submenu">
-                                                <a href="#" class="dropdown-item">Educación Media superior</a>
+                                                <a href="#" class="dropdown-item">Educación Media Superior</a>
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a href="{{ route("period_".$period.".ms") }}" class="dropdown-item">Estadísticas</a>
@@ -138,7 +138,7 @@
                                                         </ul>
                                                     </li>
                                                     <li class="dropdown-submenu">
-                                                        <a href="#" class="dropdown-item">Programas</a>
+                                                        <a href="#" class="dropdown-item">Carreras / Programas</a>
                                                         <ul class="dropdown-menu">
                                                             <li>
                                                                 <a href="{{ route("period_".$period.".sup.c") }}" class="dropdown-item">Carreras de educación superior</a>
@@ -147,7 +147,7 @@
                                                                 <a href="{{ route("period_".$period.".sup.ctl") }}" class="dropdown-item">Carreras de TSU y Licenciaturas</a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ route("period_".$period.".sup.pp") }}" class="dropdown-item">Programas de posgrado</a>
+                                                                <a href="{{ route("period_".$period.".sup.cpp") }}" class="dropdown-item">Carreras / Programas de posgrado</a>
                                                             </li>
                                                         </ul>
                                                     </li>
@@ -163,7 +163,7 @@
                                                         </ul>
                                                     </li>
                                                     <li class="dropdown-submenu">
-                                                        <a href="#" class="dropdown-item">Instituciones con mayor matricula</a>
+                                                        <a href="#" class="dropdown-item">Instituciones con mayor matrícula</a>
                                                         <ul class="dropdown-menu">
                                                             <li>
                                                                 <a href="{{ route("period_".$period.".sup.imm") }}" class="dropdown-item">Todos</a>

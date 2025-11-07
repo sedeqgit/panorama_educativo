@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr class="important-row">
                 <td>{{ $level }}</td>
                 <td class="text-center">{{ number_format($totals["male_students"] + $totals["female_students"]) }}</td>
                 <td class="text-center">{{ number_format($totals["male_students"]) }}</td>
@@ -89,7 +89,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr class="important-row">
                 <td>{{ $level }}</td>
                 <td class="text-center">{{ number_format($totals["male_students"] + $totals["female_students"]) }}</td>
                 <td class="text-center">{{ number_format($totals["male_students"]) }}</td>

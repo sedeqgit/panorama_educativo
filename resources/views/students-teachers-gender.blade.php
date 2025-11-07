@@ -6,6 +6,7 @@
 
 @php
     function calculate_percentage($number,$total){
+        if($number==0 && $total==0) return 0;
         return round(($number / $total) * 100, 2);
     }
 @endphp

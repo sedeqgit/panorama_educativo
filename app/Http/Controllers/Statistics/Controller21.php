@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
-class StatisticsController21 extends StatisticsControllerBase
+class Controller21 extends Base
 {
     public function __construct(){
         $this->initializeDBVariables(21);
@@ -200,7 +200,7 @@ class StatisticsController21 extends StatisticsControllerBase
                 ]
             ],
             "Media Superior"=> [
-                "General" => [
+                "Bachillerato General" => [
                     $this->ms_gral => [
                         "school_count" => "distinct cct_ins_pla",
                         "male_students" => "V395",
@@ -210,7 +210,7 @@ class StatisticsController21 extends StatisticsControllerBase
                         "groups" => "V401"
                     ]
                 ],
-                "Tecnológico"=> [
+                "Bachillerato Tecnológico"=> [
                     $this->ms_tecno => [
                         "school_count" => "distinct cct_ins_pla",
                         "male_students" => "V470",
@@ -361,10 +361,10 @@ class StatisticsController21 extends StatisticsControllerBase
                 }
             ],
             "Media Superior" => [
-                "General" => function($q) {
+                "Bachillerato General" => function($q) {
                     $q->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
                 },
-                "Tecnológico" => function($q) {
+                "Bachillerato Tecnológico" => function($q) {
                     $q->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
                 }
             ],

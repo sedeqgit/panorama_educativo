@@ -40,10 +40,10 @@
                             <td class="text-center"></td>
                         @endif
                     @endforeach
-                    <td class="text-center">{{ number_format($municipality_total) }}</td>
+                    <td class="text-center important-column">{{ number_format($municipality_total) }}</td>
                 </tr>
             @endforeach
-            <tr>
+            <tr class="important-row">
                 <td>Total</td>
                 @php
                     $municipality_total=0;

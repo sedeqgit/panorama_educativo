@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
-class StatisticsController18 extends StatisticsControllerBase
+class Controller18 extends Base
 {
     public function __construct(){
         $this->initializeDBVariables(18);

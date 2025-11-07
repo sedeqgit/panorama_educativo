@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Instituciones con mayor matricula en Superior'.$types)
+@section('title','Instituciones con mayor matrícula en Superior'.$types)
 
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
@@ -13,7 +13,7 @@
 
 @section('content')
     <center>
-        <h2>Instituciones con mayor matricula en Superior {{ $types }}</h2>
+        <h2>Instituciones con mayor matrícula en Superior {{ $types }}</h2>
     </center>
     <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">

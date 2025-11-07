@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Statistics;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class StatisticsControllerBase extends Controller
+class Base extends Controller
 {
     // Variables de estructura y traducción de bases de datos
     protected array $queries_data_structure, $queries_rules;
@@ -859,7 +860,7 @@ class StatisticsControllerBase extends Controller
     public function pos_study_programs(){
         try{
             $statistics = $this->getStatisticsOfLevelAndTypes('Superior', ["Especialidad","Maestría","Doctorado"]);
-            return view('study-programs', ["statistics" => $statistics, "title" => "Programas de posgrado"]);
+            return view('study-programs', ["statistics" => $statistics, "title" => "Carreras / Programas de posgrado"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }

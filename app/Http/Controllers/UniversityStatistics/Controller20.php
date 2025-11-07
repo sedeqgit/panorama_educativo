@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\UniversityStatistics;
 
 use Illuminate\Http\Request;
 
-class UniversityStatisticsController21 extends UniversityStatisticsControllerBase
+class Controller20 extends Base
 {
     public function __construct(){
-        $this->initializeDBVariables(21);
+        $this->initializeDBVariables(20);
         $this->queries_data_structure=[
             "Técnico Superior Universitario" => [
                 $this->sup_carrera => [
