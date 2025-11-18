@@ -276,18 +276,14 @@ class Controller20 extends Base
                         "carriers" => "cv_carrera",
                         "groups" => "0"
                     ]
-                ],
-                "Escuelas"=> [
-                    $this->sup_escuela => [
-                        "school_count"=> "DISTINCT cct_ins_pla",
-                        "male_students" => "0",
-                        "female_students" => "0",
-                        "male_teachers" => "V81",
-                        "female_teachers" => "V82",
-                        "groups" => "0"
-                    ]
                 ]
             ]
+        ];
+
+        $this->query_data_structure_for_university_schools_details = [
+            "school_count" => "DISTINCT cct_ins_pla",
+            "male_teachers" => "V81",
+            "female_teachers" => "V82"
         ];
 
         $this->queries_rules = [
@@ -390,9 +386,5 @@ class Controller20 extends Base
             ]
         ];
         $this->loadStatistics();
-    }
-
-    public function sample_charts(){
-        return view('sample-charts');
     }
 }

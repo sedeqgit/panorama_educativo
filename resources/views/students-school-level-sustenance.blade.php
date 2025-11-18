@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'Alumnos atendidos por tipo o nivel educativo y por sostenimiento')
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -13,11 +11,15 @@
     foreach ($totals as $sustenancetype => $data) {
         $total+=$data['male_students'] + $data['female_students'];
     }
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title', 'Alumnos atendidos por tipo o nivel educativo y por sostenimiento ('.$period.')')
 
 @section(section: 'content')
     <center>
-        <h2>Alumnos atendidos por tipo o nivel educativo y por sostenimiento</h2>
+        <h2>Alumnos atendidos por tipo o nivel educativo y por sostenimiento ({{ $period }})</h2>
     </center>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
@@ -63,7 +65,7 @@
                     </tr>
                 @endif
             @endforeach
-            <tr>
+            <tr class="important-row">
                 <td>Totales</td>
                 @foreach ($totals as $sustenancetype => $data)
                     <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
@@ -81,6 +83,9 @@
             </tr>
         </tfoot>
     </table>
+    <center class="mt-4">
+        <h2>Alumnos atendidos por tipo o nivel educativo y por sostenimiento ({{ $period }})</h2>
+    </center>
     <div class="position-absolute start-50 translate-middle-x">
         <canvas id="students_school_level_sustenance" class="bar-chart m-auto"></canvas>
         * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto

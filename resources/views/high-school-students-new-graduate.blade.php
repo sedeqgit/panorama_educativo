@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title','Alumnos, Alumnos de Nuevo Ingreso  y Egresados por Subsistemas')
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -11,11 +9,15 @@
         return round(($number / $total) * 100, 2);
     }
     ksort($statistics);
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title','Alumnos, Alumnos de Nuevo Ingreso  y Egresados por Subsistemas ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Alumnos, Alumnos de Nuevo Ingreso  y Egresados por Subsistemas</h2>
+        <h2>Alumnos, Alumnos de Nuevo Ingreso  y Egresados por Subsistemas ({{ $period }})</h2>
     </center>
     <div>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">

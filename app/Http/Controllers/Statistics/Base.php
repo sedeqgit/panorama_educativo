@@ -10,10 +10,12 @@ class Base extends Controller
 {
     // Variables de estructura y traducción de bases de datos
     protected array $queries_data_structure, $queries_rules;
+    protected array $query_data_structure_for_university_schools_details;
 
     // Variables de estadísticas
     private array $statistics;
-    private array $high_schools_universities;
+    private array $high_schools;
+    private array $universities_details;
 
     // Variables de bases de datos
     // Esquema de la base de datos
@@ -126,7 +128,6 @@ class Base extends Controller
                                     if(($type=="Comunitario" && $col== "groups") || ((($level=="Preescolar" && $type=="General") || $type=="gral_dir" || $type=="doc") && $col=="school_count")){
                                         $selects[] = DB::raw("$colname AS $col");
                                     } elseif ($col=="school_count" || $col=="carriers"){
-                                        if($type=="gral_dir") dd("No deberia pasar");
                                         $selects[] = DB::raw("COUNT($colname) AS $col");
                                     } else{
                                         $selects[] = DB::raw("SUM($colname) AS $col");
@@ -151,11 +152,10 @@ class Base extends Controller
                                 if (!isset($this->statistics[$municipality][$level][$type])) $this->statistics[$municipality][$level][$type] = [];
                                 if (!isset($this->statistics[$municipality][$level][$type][$control])) $this->statistics[$municipality][$level][$type][$control] = [];
                                 if (!isset($this->statistics[$municipality][$level][$type][$control][$subcontrol])) $this->statistics[$municipality][$level][$type][$control][$subcontrol] = [];
-                                if ($level == "Superior" || $level == "Media Superior") {
-                                    if (!isset($this->high_schools_universities[$municipality])) $this->high_schools_universities[$municipality] = [];
-                                    if (!isset($this->high_schools_universities[$municipality][$level])) $this->high_schools_universities[$municipality][$level] = [];
-                                    if (!isset($this->high_schools_universities[$municipality][$level][$control])) $this->high_schools_universities[$municipality][$level][$control] = [];
-                                    if (!isset($this->high_schools_universities[$municipality][$level][$control][$subcontrol])) $this->high_schools_universities[$municipality][$level][$control][$subcontrol] = count($schools);
+                                if ($level == "Media Superior") {
+                                    if (!isset($this->high_schools[$municipality])) $this->high_schools[$municipality] = [];
+                                    if (!isset($this->high_schools[$municipality][$control])) $this->high_schools[$municipality][$control] = [];
+                                    if (!isset($this->high_schools[$municipality][$control][$subcontrol])) $this->high_schools[$municipality][$control][$subcontrol] = count($schools);
                                 }
                                 foreach ($colsmap as $col => $colname) {
                                     $this->statistics[$municipality][$level][$type][$control][$subcontrol][$col] = ($this->statistics[$municipality][$level][$type][$control][$subcontrol][$col] ?? 0) + ($data->$col ?? 0);
@@ -166,18 +166,46 @@ class Base extends Controller
                     }
                 }
             }
+            foreach ($controls_queries_rules as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $subcontrol_condition){
+                    $query = DB::table($this->database_schema.$this->sup_escuela);
+                    $selects = [];
+                    foreach ($this->query_data_structure_for_university_schools_details as $col => $colname){
+                        if ($col == 'school_count'){
+                            $selects[] = DB::raw("COUNT($colname) AS $col");
+                        } else {
+                            $selects[] = DB::raw("SUM($colname) AS $col");
+                        }
+                    }
+                    $query->where("cv_mun","=",($i+1))->where($subcontrol_condition)->where("cv_motivo","=","0")->select($selects);
+                    $data = $query->first();
+                    if (!isset($this->universities_details[$municipality])) $this->universities_details[$municipality] = [];
+                    if (!isset($this->universities_details[$municipality][$control])) $this->universities_details[$municipality][$control] = [];
+                    if (!isset($this->universities_details[$municipality][$control][$subcontrol])) $this->universities_details[$municipality][$control][$subcontrol] = [];
+                    foreach ($this->query_data_structure_for_university_schools_details as $col => $colname){
+                        $this->universities_details[$municipality][$control][$subcontrol][$col] = ($this->universities_details[$municipality][$control][$subcontrol][$col] ?? 0) + ($data->$col ?? 0);
+                    }
+                }
+            }
         }
     }
 
     private function getStatisticsOfTotals(){
         $statistics_of_totals = [];
-        $high_schools_universities = [];
-        foreach ($this->high_schools_universities as $municipality => $levels){
-            foreach ($levels as $level => $controls){
-                foreach ($controls as $control => $subcontrol){
-                    foreach ($subcontrol as $schools) {
-                        if(!isset($high_schools_universities[$level])) $high_schools_universities[$level] = 0;
-                        $high_schools_universities[$level]+=$schools;
+        $high_schools = 0;
+        foreach ($this->high_schools as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $schools) {
+                    $high_schools+=$schools;
+                }
+            }
+        }
+        $universities_details = [];
+        foreach ($this->universities_details as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $data) {
+                    foreach ($data as $key => $value){
+                        $universities_details[$key] = ($universities_details[$key] ?? 0) + ($data[$key]);
                     }
                 }
             }
@@ -188,8 +216,10 @@ class Base extends Controller
                     foreach ($controls as $control => $subcontrols){
                         foreach ($subcontrols as $subcontrol => $data){
                             foreach ($data as $key => $value) {
-                                if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                    $statistics_of_totals[$key] = $high_schools_universities[$level];
+                                if ($level == "Media Superior" && $key == "school_count") {
+                                    $statistics_of_totals[$key] = $high_schools;
+                                } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                    $statistics_of_totals[$key] = $universities_details[$key];
                                 } elseif ($level == "Especial (USAER)" && ($key=="female_students" || $key=="male_students" || $key=="school_count")){
                                 } else {
                                     $statistics_of_totals[$key] = ($statistics_of_totals[$key] ?? 0) + ($data[$key]);
@@ -205,13 +235,20 @@ class Base extends Controller
 
     private function getStatisticsOfTotalsByLevels(){
         $statistics_of_totals = [];
-        $high_schools_universities = [];
-        foreach ($this->high_schools_universities as $municipality => $levels){
-            foreach ($levels as $level => $controls){
-                foreach ($controls as $control => $subcontrol){
-                    foreach ($subcontrol as $schools) {
-                        if(!isset($high_schools_universities[$level])) $high_schools_universities[$level] = 0;
-                        $high_schools_universities[$level]+=$schools;
+        $high_schools = 0;
+        foreach ($this->high_schools as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $schools) {
+                    $high_schools+=$schools;
+                }
+            }
+        }
+        $universities_details = [];
+        foreach ($this->universities_details as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $data) {
+                    foreach ($data as $key => $value){
+                        $universities_details[$key] = ($universities_details[$key] ?? 0) + ($data[$key]);
                     }
                 }
             }
@@ -223,8 +260,10 @@ class Base extends Controller
                         foreach ($subcontrols as $subcontrol => $data){
                             foreach ($data as $key => $value) {
                                 if (!isset($statistics_of_totals[$level])) $statistics_of_totals[$level] = [];
-                                if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                    $statistics_of_totals[$level][$key] = $high_schools_universities[$level];
+                                if ($level == "Media Superior" && $key == "school_count") {
+                                    $statistics_of_totals[$level][$key] = $high_schools;
+                                } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                    $statistics_of_totals[$level][$key] = $universities_details[$key];
                                 } else {
                                     $statistics_of_totals[$level][$key] = ($statistics_of_totals[$level][$key] ?? 0) + ($data[$key]);
                                 }
@@ -239,14 +278,22 @@ class Base extends Controller
 
     private function getStatisticsOfTotalsByLevelsAndControl(){
         $statistics_of_totals = [];
-        $high_schools_universities = [];
-        foreach ($this->high_schools_universities as $municipality => $levels){
-            foreach ($levels as $level => $controls){
-                foreach ($controls as $control => $subcontrol){
-                    foreach ($subcontrol as $schools) {
-                        if(!isset($high_schools_universities[$level])) $high_schools_universities[$level] = [];
-                        if(!isset($high_schools_universities[$level][$control])) $high_schools_universities[$level][$control] = 0;
-                        $high_schools_universities[$level][$control]+=$schools;
+        $high_schools = [];
+        foreach ($this->high_schools as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $schools) {
+                    if(!isset($high_schools[$control])) $high_schools[$control] = 0;
+                    $high_schools[$control]+=$schools;
+                }
+            }
+        }
+        $universities_details = [];
+        foreach ($this->universities_details as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $data) {
+                    foreach ($data as $key => $value){
+                        if(!isset($universities_details[$control])) $universities_details[$control] = [];
+                        $universities_details[$control][$key] = ($universities_details[$control][$key] ?? 0) + ($data[$key]);
                     }
                 }
             }
@@ -259,10 +306,11 @@ class Base extends Controller
                             foreach ($data as $key => $value) {
                                 if (!isset($statistics_of_totals[$level])) $statistics_of_totals[$level] = [];
                                 if (!isset($statistics_of_totals[$level][$control])) $statistics_of_totals[$level][$control] = [];
-                                if (($level == "Media Superior" || $level == "Superior") && $key == "school_count"){
-                                    $statistics_of_totals[$level][$control][$key] = $high_schools_universities[$level][$control];
-                                }
-                                else {
+                                if (($level == "Media Superior") && $key == "school_count"){
+                                    $statistics_of_totals[$level][$control][$key] = $high_schools[$control];
+                                } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                    $statistics_of_totals[$level][$control][$key] = $universities_details[$control][$key];
+                                } else {
                                     $statistics_of_totals[$level][$control][$key] = ($statistics_of_totals[$level][$control][$key] ?? 0) + ($data[$key]);
                                 }
                             }
@@ -276,19 +324,26 @@ class Base extends Controller
 
     private function getStatisticsOfTotalsByControl(){
         $statistics_of_totals = [];
-        $high_schools_universities = [];
-        foreach ($this->high_schools_universities as $municipality => $levels){
-            foreach ($levels as $level => $controls){
-                foreach ($controls as $control => $subcontrol){
-                    foreach ($subcontrol as $schools) {
-                        if(!isset($high_schools_universities[$control])) $high_schools_universities[$control] = 0;
-                        $high_schools_universities[$control]+=$schools;
+        $high_schools = [];
+        foreach ($this->high_schools as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $schools) {
+                    if(!isset($high_schools[$control])) $high_schools[$control] = 0;
+                    $high_schools[$control]+=$schools;
+                }
+            }
+        }
+        $universities_details = [];
+        foreach ($this->universities_details as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $data) {
+                    foreach ($data as $key => $value){
+                        if(!isset($universities_details[$control])) $universities_details[$control] = [];
+                        $universities_details[$control][$key] = ($universities_details[$control][$key] ?? 0) + ($data[$key]);
                     }
                 }
             }
         }
-        $public=true;
-        $private=true;
         foreach($this->statistics as $municipality => $levels){
             foreach($levels as $level => $types){
                 foreach ($types as $type => $controls){
@@ -296,13 +351,11 @@ class Base extends Controller
                         foreach ($subcontrols as $subcontrol => $data){
                             foreach ($data as $key => $value) {
                                 if (!isset($statistics_of_totals[$control])) $statistics_of_totals[$control] = [];
-                                if (($level == "Media Superior" || $level == "Superior") && $key == "school_count"){
-                                    if (($control=="Público" && $public) || ($control=="Privado" && $private)){
-                                        $statistics_of_totals[$control][$key] += $high_schools_universities[$control];
-                                        if ($control=="Público") $public=false;
-                                        if ($control=="Privado") $private=false;
-                                    }
-                                }  elseif ($level == "Especial (USAER)" && ($key=="female_students" || $key=="male_students" || $key=="school_count")){
+                                if (($level == "Media Superior") && $key == "school_count"){
+                                    $statistics_of_totals[$control][$key] = $high_schools[$control];
+                                } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                    $statistics_of_totals[$control][$key] = $universities_details[$control][$key];
+                                } elseif ($level == "Especial (USAER)" && ($key=="female_students" || $key=="male_students" || $key=="school_count")){
                                 } else {
                                     $statistics_of_totals[$control][$key] = ($statistics_of_totals[$control][$key] ?? 0) + ($data[$key]);
                                 }
@@ -317,16 +370,20 @@ class Base extends Controller
 
     private function getStatisticsOfLevel($level_to_look_up){
         $statistics_of_level = [];
-        $high_schools_universities = 0;
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrol){
-                            foreach ($subcontrol as $schools) {
-                                $high_schools_universities+=$schools;
-                            }
-                        }
+        $high_schools = 0;
+        foreach ($this->high_schools as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $schools) {
+                    $high_schools+=$schools;
+                }
+            }
+        }
+        $universities_details = [];
+        foreach ($this->universities_details as $municipality => $controls){
+            foreach ($controls as $control => $subcontrols){
+                foreach ($subcontrols as $subcontrol => $data) {
+                    foreach ($data as $key => $value){
+                        $universities_details[$key] = ($universities_details[$key] ?? 0) + ($data[$key]);
                     }
                 }
             }
@@ -338,8 +395,10 @@ class Base extends Controller
                         foreach ($controls as $control => $subcontrols){
                             foreach ($subcontrols as $subcontrol => $data){
                                 foreach ($data as $key => $value) {
-                                    if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                        $statistics_of_level[$key] = $high_schools_universities;
+                                    if ($level == "Media Superior" && $key == "school_count") {
+                                        $statistics_of_level[$key] = $high_schools;
+                                    } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                        $statistics_of_level[$key] = $universities_details[$key];
                                     } else {
                                         $statistics_of_level[$key] = ($statistics_of_level[$key] ?? 0) + ($data[$key]);
                                     }
@@ -355,15 +414,25 @@ class Base extends Controller
 
     private function getStatisticsOfLevelAndSubcontrol($level_to_look_up,$subcontrol_to_lookup){
         $statistics_of_level = [];
-        $high_schools_universities = 0;
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrols){
-                            foreach ($subcontrols as $subcontrol=>$schools) {
-                                if ($subcontrol==$subcontrol_to_lookup) $high_schools_universities+=$schools;
-                            }
+        $high_schools = [];
+        if ($level_to_look_up=="Media Superior"){
+            foreach ($this->high_schools as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $schools) {
+                        if(!isset($high_schools[$subcontrol])) $high_schools[$subcontrol] = 0;
+                        $high_schools[$subcontrol]+=$schools;
+                    }
+                }
+            }
+        }
+        $universities_details = [];
+        if ($level_to_look_up=="Superior"){
+            foreach ($this->universities_details as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $data) {
+                        foreach ($data as $key => $value){
+                            if(!isset($universities_details[$subcontrol])) $universities_details[$subcontrol] = [];
+                            $universities_details[$subcontrol][$key] = ($universities_details[$subcontrol][$key] ?? 0) + ($data[$key]);
                         }
                     }
                 }
@@ -377,8 +446,10 @@ class Base extends Controller
                             foreach ($subcontrols as $subcontrol => $data){
                                 if ($subcontrol==$subcontrol_to_lookup) {
                                     foreach ($data as $key => $value) {
-                                        if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                            $statistics_of_level[$key] = $high_schools_universities;
+                                        if ($level == "Media Superior" && $key == "school_count") {
+                                            $statistics_of_level[$key] = $high_schools[$subcontrol];
+                                        } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                            $statistics_of_level[$key] = $universities_details[$subcontrol][$key];
                                         } else {
                                             $statistics_of_level[$key] = ($statistics_of_level[$key] ?? 0) + ($data[$key]);
                                         }
@@ -414,17 +485,29 @@ class Base extends Controller
         return $statistics_of_level;
     }
 
-    private function getStatisticsOfLevelByControl($level_to_look_up){
+    private function getStatisticsOfLevelsByControl(array $levels_to_look_up){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrol){
-                            foreach ($subcontrol as $schools) {
-                                if (!isset($high_schools_universities[$control])) $high_schools_universities[$control] = 0;
-                                $high_schools_universities[$control]+=$schools;
+        $only_one = count($levels_to_look_up) == 1;
+        $high_schools = [];
+        $universities_details = [];
+        foreach ($levels_to_look_up as $level_to_look_up){
+            if ($level_to_look_up=="Media Superior"){
+                foreach ($this->high_schools as $municipality => $controls){
+                    foreach ($controls as $control => $subcontrols){
+                        foreach ($subcontrols as $subcontrol => $schools) {
+                            if(!isset($high_schools[$control])) $high_schools[$control] = 0;
+                            $high_schools[$control]+=$schools;
+                        }
+                    }
+                }
+            }
+            if ($level_to_look_up== "Superior"){
+                        foreach ($this->universities_details as $municipality => $controls){
+                    foreach ($controls as $control => $subcontrols){
+                        foreach ($subcontrols as $subcontrol => $data) {
+                            foreach ($data as $key => $value){
+                                if(!isset($universities_details[$control])) $universities_details[$control] = [];
+                                $universities_details[$control][$key] = ($universities_details[$control][$key] ?? 0) + ($data[$key]);
                             }
                         }
                     }
@@ -433,16 +516,21 @@ class Base extends Controller
         }
         foreach ($this->statistics as $municipality => $levels){
             foreach($levels as $level => $types){
-                if ($level_to_look_up == $level) {
-                    foreach ($types as $type => $controls){
-                        foreach ($controls as $control => $subcontrols){
-                            foreach ($subcontrols as $subcontrol => $data){
-                                foreach ($data as $key => $value) {
-                                    if (!isset($statistics_of_level[$control])) $statistics_of_level[$control] = [];
-                                    if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                        $statistics_of_level[$control][$key] = $high_schools_universities[$control];
-                                    } else {
-                                        $statistics_of_level[$control][$key] = ($statistics_of_level[$control][$key] ?? 0) + ($data[$key]);
+                foreach ($levels_to_look_up as $level_to_look_up){
+                    if ($level_to_look_up == $level) {
+                        foreach ($types as $type => $controls){
+                            foreach ($controls as $control => $subcontrols){
+                                foreach ($subcontrols as $subcontrol => $data){
+                                    foreach ($data as $key => $value) {
+                                        if (!isset($statistics_of_level[$control])) $statistics_of_level[$control] = [];
+                                        if ($level == "Media Superior" && $key == "school_count") {
+                                            $statistics_of_level[$control][$key] = $high_schools[$control];
+                                        } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                            $statistics_of_level[$control][$key] = $universities_details[$control][$key];
+                                        } elseif (!$only_one && $level=="Especial (USAER)"  && ($key=="female_students" || $key=="male_students" || $key=="school_count")){
+                                        } else {
+                                            $statistics_of_level[$control][$key] = ($statistics_of_level[$control][$key] ?? 0) + ($data[$key]);
+                                        }
                                     }
                                 }
                             }
@@ -456,16 +544,25 @@ class Base extends Controller
 
     private function getStatisticsOfLevelBySubcontrol($level_to_look_up){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrols){
-                            foreach ($subcontrols as $subcontrol => $schools) {
-                                if (!isset($high_schools_universities[$subcontrol])) $high_schools_universities[$subcontrol] = 0;
-                                $high_schools_universities[$subcontrol]+=$schools;
-                            }
+        $high_schools = [];
+        $universities_details = [];
+        if ($level_to_look_up=="Media Superior"){
+            foreach ($this->high_schools as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $schools) {
+                        if(!isset($high_schools[$subcontrol])) $high_schools[$subcontrol] = 0;
+                        $high_schools[$subcontrol]+=$schools;
+                    }
+                }
+            }
+        }
+        if ($level_to_look_up== "Superior"){
+            foreach ($this->universities_details as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $data) {
+                        foreach ($data as $key => $value){
+                            if(!isset($universities_details[$subcontrol])) $universities_details[$subcontrol] = [];
+                            $universities_details[$subcontrol][$key] = ($universities_details[$subcontrol][$key] ?? 0) + ($data[$key]);
                         }
                     }
                 }
@@ -479,8 +576,10 @@ class Base extends Controller
                             foreach ($subcontrols as $subcontrol => $data){
                                 foreach ($data as $key => $value) {
                                     if (!isset($statistics_of_level[$subcontrol])) $statistics_of_level[$subcontrol] = [];
-                                    if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                        $statistics_of_level[$subcontrol][$key] = $high_schools_universities[$subcontrol];
+                                    if ($level == "Media Superior" && $key == "school_count") {
+                                        $statistics_of_level[$subcontrol][$key] = $high_schools[$subcontrol];
+                                    } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                        $statistics_of_level[$subcontrol][$key] = $universities_details[$subcontrol][$key];
                                     } else {
                                         $statistics_of_level[$subcontrol][$key] = ($statistics_of_level[$subcontrol][$key] ?? 0) + ($data[$key]);
                                     }
@@ -496,16 +595,25 @@ class Base extends Controller
 
     private function getStatisticsOfLevelByMunicipalities($level_to_look_up){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrols){
-                            foreach ($subcontrols as $subcontrol => $schools) {
-                                if (!isset($high_schools_universities[$municipality])) $high_schools_universities[$municipality] = 0;
-                                $high_schools_universities[$municipality]+=$schools;
-                            }
+        $high_schools = [];
+        $universities_details = [];
+        if ($level_to_look_up=="Media Superior"){
+            foreach ($this->high_schools as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $schools) {
+                        if(!isset($high_schools[$municipality])) $high_schools[$municipality] = 0;
+                        $high_schools[$municipality]+=$schools;
+                    }
+                }
+            }
+        }
+        if ($level_to_look_up== "Superior"){
+            foreach ($this->universities_details as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $data) {
+                        foreach ($data as $key => $value){
+                            if(!isset($universities_details[$municipality])) $universities_details[$municipality] = [];
+                            $universities_details[$municipality][$key] = ($universities_details[$municipality][$key] ?? 0) + ($data[$key]);
                         }
                     }
                 }
@@ -519,8 +627,10 @@ class Base extends Controller
                             foreach ($subcontrols as $subcontrol => $data){
                                 foreach ($data as $key => $value) {
                                     if (!isset($statistics_of_level[$municipality])) $statistics_of_level[$municipality] = [];
-                                    if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                        $statistics_of_level[$municipality][$key] = $high_schools_universities[$municipality];
+                                    if ($level == "Media Superior" && $key == "school_count") {
+                                        $statistics_of_level[$municipality][$key] = $high_schools[$municipality];
+                                    } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                        $statistics_of_level[$municipality][$key] = $universities_details[$municipality][$key];
                                     } else {
                                         $statistics_of_level[$municipality][$key] = ($statistics_of_level[$municipality][$key] ?? 0) + ($data[$key]);
                                     }
@@ -536,18 +646,25 @@ class Base extends Controller
 
     private function getStatisticsOfLevelAndSubcontrolByMunicipalities($level_to_look_up,$subcontrol_to_lookup){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrols){
-                            foreach ($subcontrols as $subcontrol => $schools) {
-                                if ($subcontrol==$subcontrol_to_lookup){
-                                    if (!isset($high_schools_universities[$municipality])) $high_schools_universities[$municipality] = 0;
-                                    $high_schools_universities[$municipality]+=$schools;
-                                }
-                            }
+        $high_schools = [];
+        $universities_details = [];
+        if ($level_to_look_up=="Media Superior"){
+            foreach ($this->high_schools as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $schools) {
+                        if(!isset($high_schools[$municipality])) $high_schools[$municipality] = 0;
+                        $high_schools[$municipality]+=$schools;
+                    }
+                }
+            }
+        }
+        if ($level_to_look_up== "Superior"){
+            foreach ($this->universities_details as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $data) {
+                        foreach ($data as $key => $value){
+                            if(!isset($universities_details[$municipality])) $universities_details[$municipality] = [];
+                            $universities_details[$municipality][$key] = ($universities_details[$municipality][$key] ?? 0) + ($data[$key]);
                         }
                     }
                 }
@@ -562,8 +679,10 @@ class Base extends Controller
                                 if ($subcontrol==$subcontrol_to_lookup){
                                     foreach ($data as $key => $value) {
                                         if (!isset($statistics_of_level[$municipality])) $statistics_of_level[$municipality] = [];
-                                        if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                            $statistics_of_level[$municipality][$key] = $high_schools_universities[$municipality];
+                                        if ($level == "Media Superior" && $key == "school_count") {
+                                            $statistics_of_level[$municipality][$key] = $high_schools[$municipality];
+                                        } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                            $statistics_of_level[$municipality][$key] = $universities_details[$municipality][$key];
                                         } else {
                                             $statistics_of_level[$municipality][$key] = ($statistics_of_level[$municipality][$key] ?? 0) + ($data[$key]);
                                         }
@@ -580,17 +699,27 @@ class Base extends Controller
 
     private function getStatisticsOfLevelByMunicipalitiesAndControls($level_to_look_up){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrols){
-                            foreach ($subcontrols as $subcontrol => $schools) {
-                                if (!isset($high_schools_universities[$municipality])) $high_schools_universities[$municipality] = [];
-                                if (!isset($high_schools_universities[$municipality][$control])) $high_schools_universities[$municipality][$control] = 0;
-                                $high_schools_universities[$municipality][$control]+=$schools;
-                            }
+        $high_schools = [];
+        $universities_details = [];
+        if ($level_to_look_up=="Media Superior"){
+            foreach ($this->high_schools as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $schools) {
+                        if(!isset($high_schools[$municipality])) $high_schools[$municipality] = [];
+                        if(!isset($high_schools[$municipality][$control])) $high_schools[$municipality][$control] = 0;
+                        $high_schools[$municipality][$control]+=$schools;
+                    }
+                }
+            }
+        }
+        if ($level_to_look_up== "Superior"){
+            foreach ($this->universities_details as $municipality => $controls){
+                foreach ($controls as $control => $subcontrols){
+                    foreach ($subcontrols as $subcontrol => $data) {
+                        foreach ($data as $key => $value){
+                            if(!isset($universities_details[$municipality])) $universities_details[$municipality] = [];
+                            if(!isset($universities_details[$municipality][$control])) $universities_details[$municipality][$control] = [];
+                            $universities_details[$municipality][$control][$key] = ($universities_details[$municipality][$control][$key] ?? 0) + ($data[$key]);
                         }
                     }
                 }
@@ -605,8 +734,10 @@ class Base extends Controller
                                 foreach ($data as $key => $value) {
                                     if (!isset($statistics_of_level[$municipality])) $statistics_of_level[$municipality] = [];
                                     if (!isset($statistics_of_level[$municipality][$control])) $statistics_of_level[$municipality][$control] = [];
-                                    if (($level == "Media Superior" || $level == "Superior") && $key == "school_count") {
-                                        $statistics_of_level[$municipality][$control][$key] = $high_schools_universities[$municipality][$control];
+                                    if ($level == "Media Superior" && $key == "school_count") {
+                                        $statistics_of_level[$municipality][$control][$key] = $high_schools[$municipality][$control];
+                                    } elseif ($level == "Superior" && ($key == "school_count" || $key == "male_teachers" || $key == "female_teachers")) {
+                                        $statistics_of_level[$municipality][$control][$key] = $universities_details[$municipality][$control][$key];
                                     } else {
                                         $statistics_of_level[$municipality][$control][$key] = ($statistics_of_level[$municipality][$control][$key] ?? 0) + ($data[$key]);
                                     }
@@ -617,26 +748,12 @@ class Base extends Controller
                 }
             }
         }
+        //dd($statistics_of_level);
         return $statistics_of_level;
     }
 
     private function getStatisticsOfLevelByTypesAndControls($level_to_look_up){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrol){
-                            foreach ($subcontrol as $schools) {
-                                if (!isset($high_schools_universities[$control])) $high_schools_universities[$control] = 0;
-                                $high_schools_universities[$control]+=$schools;
-                            }
-                        }
-                    }
-                }
-            }
-        }
         foreach ($this->statistics as $municipality => $levels){
             foreach($levels as $level => $types){
                 if ($level_to_look_up == $level) {
@@ -659,23 +776,6 @@ class Base extends Controller
 
     private function getStatisticsOfLevelAndSubcontrolByTypes($level_to_look_up,$subcontrol_to_lookup){
         $statistics_of_level = [];
-        $high_schools_universities = [];
-        if ($level_to_look_up=="Superior" || $level_to_look_up== "Media Superior"){
-            foreach ($this->high_schools_universities as $municipality => $levels){
-                foreach ($levels as $level => $controls){
-                    if ($level==$level_to_look_up) {
-                        foreach ($controls as $control => $subcontrol){
-                            foreach ($subcontrol as $schools) {
-                                if ($subcontrol==$subcontrol_to_lookup){
-                                    if (!isset($high_schools_universities[$control])) $high_schools_universities[$control] = 0;
-                                    $high_schools_universities[$control]+=$schools;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         foreach ($this->statistics as $municipality => $levels){
             foreach($levels as $level => $types){
                 if ($level_to_look_up == $level) {
@@ -723,6 +823,20 @@ class Base extends Controller
     }
 
     // Páginas
+    public function beginning_period_statistics(){
+        try{
+            $basic_ini_statistics = $this->getStatisticsOfTotalsByLevelsAndControl();
+            array_splice($basic_ini_statistics,-2);
+            $basic_ini_totals = $this->getStatisticsOfLevelsByControl(["Inicial (Escolarizado)", "Inicial (No escolarizado)", "Especial (CAM)", "Especial (USAER)", "Preescolar", "Primaria", "Secundaria"]);
+            $high_school_totals = $this->getStatisticsOfLevelsByControl(["Media Superior"]);
+            $university_statistics = $this->getStatisticsOfLevelByTypesAndControls("Superior");
+            $university_totals = $this->getStatisticsOfLevelsByControl(["Superior"]);
+            return view('beginning-period-statistics', ['basic_ini_statistics' => $basic_ini_statistics, 'basic_ini_totals' => $basic_ini_totals, 'high_school_totals' => $high_school_totals, 'university_statistics' => $university_statistics, 'university_totals' => $university_totals]);
+        } catch (\Exception $e){
+            return view('page-under-construction');
+        }
+    }
+
     public function students_teachers_gender(){
         try{
             $statistics = $this->getStatisticsOfTotalsByLevels();
@@ -774,7 +888,7 @@ class Base extends Controller
             $stats2 = $this->getStatisticsOfLevelByTypes($level);
             $stats3 = $this->getStatisticsOfLevelByMunicipalities($level);
             $stats4 = $this->getStatisticsOfLevelByMunicipalitiesAndControls($level);
-            $totals1 = $this->getStatisticsOfLevelByControl($level);
+            $totals1 = $this->getStatisticsOfLevelsByControl([$level]);
             $totals2 = $this->getStatisticsOfLevel($level);
             return view('level-statistics',['stats1' => $stats1, 'stats2' => $stats2, 'stats3' => $stats3, 'stats4' => $stats4, 'totals1' => $totals1, 'totals2' => $totals2, 'level' => $level]);
         } catch (\Exception $e){

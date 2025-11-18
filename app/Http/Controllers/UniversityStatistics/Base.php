@@ -14,7 +14,6 @@ class Base extends Controller
 
     // Variables de estadísticas
     private array $statistics, $statistics_by_institutions;
-    private array $school_count;
 
     // Variables de bases de datos
     // Esquema de la base de datos
@@ -99,13 +98,12 @@ class Base extends Controller
                             }
                         }
                         $schools=DB::table($this->database_schema.$this->sup_escuela)->where("cv_mun","=",($i+1))->where("cv_motivo","=","0")->pluck("cct_ins_pla")->values()->toArray();
-                        $this->school_count[$municipality] = count($schools);
                         if ($tablename==$this->sup_escuela){
                             $query->where("cv_mun","=",($i+1))->where($type_condition($query));
                         } else {
-                            if ($field>9) $field_carrier="%0". $field_id+1 ."%";
-                            else $field_carrier="%". $field_id+1 ."%";
-                            $query->where("cv_mun","=",($i+1))->where($type_condition($query))->where("cv_carrera", "LIKE",$field_carrier);
+                            if ($field_id<9) $field_carrier="0". $field_id+1 ."%";
+                            else $field_carrier=$field_id+1 ."%";
+                            $query->where("cv_mun","=",($i+1))->where($type_condition($query,$field_carrier));
                         }
                         $data = $query->select($selects)->first();
                         if (!isset($this->statistics[$municipality])) $this->statistics[$municipality] = [];

@@ -8,7 +8,7 @@ class Controller18 extends Base
         $this->initializeDBVariables(18);
         $this->queries_data_structure=[
             "Inicial (Escolarizado)" => [
-                "gral" => [
+                "General" => [
                     $this->ini_gral => [
                         "school_count" => "cv_cct",
                         "male_students" => "V390+V406",
@@ -27,20 +27,10 @@ class Controller18 extends Base
                         "female_teachers" => "V786",
                         "groups" => "0"
                     ]
-                ],
-                "ind"=> [
-                    $this->ini_ind => [
-                        "school_count" => "cv_cct",
-                        "male_students" => "V183",
-                        "female_students" => "V184",
-                        "male_teachers" => "V211",
-                        "female_teachers" => "V212",
-                        "groups" => "0"
-                    ]
                 ]
             ],
             "Inicial (No escolarizado)"=> [
-                "ne"=> [
+                "total"=> [
                     $this->ini_ne => [
                         "school_count" => "cv_cct",
                         "male_students" => "V370",
@@ -86,9 +76,9 @@ class Controller18 extends Base
                 ]
             ],
             "Preescolar" => [
-                "gral" => [
+                "General" => [
                     $this->ini_gral => [
-                        "school_count" => "SUM(0)",
+                        "school_count" => "0",
                         "male_students" => "V466",
                         "female_students" => "V472",
                         "male_teachers" => "V513+V520+V527",
@@ -104,7 +94,7 @@ class Controller18 extends Base
                         "groups" => "V182"
                     ]
                 ],
-                "comuni"=> [
+                "Comunitario"=> [
                     $this->pree_comuni => [
                         "school_count" => "cv_cct",
                         "male_students" => "V85",
@@ -114,7 +104,7 @@ class Controller18 extends Base
                         "groups" => "COUNT(cv_cct)-SUM(V78)"
                     ]
                 ],
-                "ind" => [
+                "Indígena" => [
                     $this->pree_ind => [
                         "school_count" => "cv_cct",
                         "male_students" => "V165",
@@ -126,7 +116,7 @@ class Controller18 extends Base
                 ]
             ],
             "Primaria" => [
-                "gral" => [
+                "General" => [
                     $this->prim_gral => [
                         "school_count" => "cv_cct",
                         "male_students" => "V562+V573",
@@ -136,7 +126,7 @@ class Controller18 extends Base
                         "groups" => "V616"
                     ]
                 ],
-                "comuni" => [
+                "Comunitario" => [
                     $this->prim_comuni => [
                         "school_count" => "cv_cct",
                         "male_students" => "V469+V480",
@@ -146,7 +136,7 @@ class Controller18 extends Base
                         "groups" => "COUNT(cv_cct)"
                     ]
                 ],
-                "ind" => [
+                "Indígena" => [
                     $this->prim_ind => [
                         "school_count" => "cv_cct",
                         "male_students" => "V564+V575",
@@ -158,7 +148,7 @@ class Controller18 extends Base
                 ]
             ],
             "Secundaria" => [
-                "gral" => [
+                "General" => [
                     $this->sec_gral => [
                         "school_count" => "cv_cct",
                         "male_students" => "V306+V314",
@@ -168,7 +158,7 @@ class Controller18 extends Base
                         "groups" => "V341"
                     ]
                 ],
-                "tele" => [
+                "Telesecundaria" => [
                     $this->sec_gral => [
                         "school_count" => "cv_cct",
                         "male_students" => "V306+V314",
@@ -178,7 +168,7 @@ class Controller18 extends Base
                         "groups" => "V341"
                     ]
                 ],
-                "tec" => [
+                "Técnica" => [
                     $this->sec_gral => [
                         "school_count" => "cv_cct",
                         "male_students" => "V306+V314",
@@ -188,7 +178,7 @@ class Controller18 extends Base
                         "groups" => "V341"
                     ]
                 ],
-                "comuni" => [
+                "Comunitario" => [
                     $this->sec_comuni => [
                         "school_count" => "cv_cct",
                         "male_students" => "V223+V231",
@@ -200,9 +190,9 @@ class Controller18 extends Base
                 ]
             ],
             "Media Superior"=> [
-                "gral" => [
+                "Bachillerato General" => [
                     $this->ms_gral => [
-                        "school_count" => "DISTINCT CONCAT(cct_ins_pla,'-',cv_cct,'-',c_turno)",
+                        "school_count" => "distinct cct_ins_pla",
                         "male_students" => "V395",
                         "female_students" => "V396",
                         "male_teachers" => "V958",
@@ -210,9 +200,9 @@ class Controller18 extends Base
                         "groups" => "V401"
                     ]
                 ],
-                "tecno"=> [
+                "Bachillerato Tecnológico"=> [
                     $this->ms_tecno => [
-                        "school_count" => "DISTINCT CONCAT(cct_ins_pla,'-',cv_cct,'-',c_turno)",
+                        "school_count" => "distinct cct_ins_pla",
                         "male_students" => "V470",
                         "female_students" => "V471",
                         "male_teachers" => "V1057",
@@ -222,223 +212,167 @@ class Controller18 extends Base
                 ]
             ],
             "Superior"=> [
-                "tsu" => [],
-                "lic" => [],
-                "pos" => [
+                "Técnico Superior Universitario" => [
+                    $this->sup_carrera => [
+                        "school_count" => "DISTINCT cct_ins_pla",
+                        "male_students" => "V175",
+                        "female_students" => "V176",
+                        "male_teachers" => "0",
+                        "female_teachers" => "0",
+                        "carriers" => "cv_carrera",
+                        "groups" => "0"
+                    ]
+                ],
+                "Licenciatura" => [
+                    $this->sup_carrera => [
+                        "school_count" => "DISTINCT cct_ins_pla",
+                        "male_students" => "V175",
+                        "female_students" => "V176",
+                        "male_teachers" => "0",
+                        "female_teachers" => "0",
+                        "carriers" => "cv_carrera",
+                        "groups" => "0"
+                    ]
+                ],
+                "Especialidad" => [
                     $this->sup_posgrado => [
-                        "school_count" => "COUNT(DISTINCT cct_ins_pla)",
+                        "school_count" => "DISTINCT cct_ins_pla",
                         "male_students" => "V140",
                         "female_students" => "V141",
                         "male_teachers" => "0",
                         "female_teachers" => "0",
+                        "carriers" => "cv_carrera",
                         "groups" => "0"
-                    ],
-                    $this->sup_escuela => [
-                        "school_count" => "COUNT(DISTINCT cct_ins_pla)",
-                        "male_students" => "0",
-                        "female_students" => "0",
-                        "male_teachers" => "V769",
-                        "female_teachers" => "V770",
+                    ]
+                ],
+                "Maestría" => [
+                    $this->sup_posgrado => [
+                        "school_count" => "DISTINCT cct_ins_pla",
+                        "male_students" => "V140",
+                        "female_students" => "V141",
+                        "male_teachers" => "0",
+                        "female_teachers" => "0",
+                        "carriers" => "cv_carrera",
+                        "groups" => "0"
+                    ]
+                ],
+                "Doctorado" => [
+                    $this->sup_posgrado => [
+                        "school_count" => "DISTINCT cct_ins_pla",
+                        "male_students" => "V140",
+                        "female_students" => "V141",
+                        "male_teachers" => "0",
+                        "female_teachers" => "0",
+                        "carriers" => "cv_carrera",
                         "groups" => "0"
                     ]
                 ]
             ]
         ];
 
+        $this->query_data_structure_for_university_schools_details = [
+            "school_count" => "DISTINCT cct_ins_pla",
+            "male_teachers" => "V81",
+            "female_teachers" => "V82"
+        ];
+
         $this->queries_rules = [
             "Inicial (Escolarizado)"=> [
-                "gral" => [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ],
-                "gral_dir" => [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("v478",">","0");
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("v478",">","0");
-                    }
-                ],
-                "ind" => [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ]
+                "General" => function($q){
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                },
+                "gral_dir" => function($q){
+                    $q->whereIn("cv_estatus_captura", [0,10])->where("v478",">","0");
+                },
+                "Indígena" => function($q){
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                }
             ],
             "Inicial (No escolarizado)"=> [
-                "ne" => [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ]
+                "total" => function($q){
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                }
             ],
             "Especial (CAM)"=> [
-                "total" => [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0]);
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0]);
-                    }
-                ]
+                "total" => function($q){
+                    $q->whereIn("cv_estatus_captura", [0]);
+                }
             ],
             "Especial (USAER)"=> [
-                "total" => [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ],
-                "doc"=> [
-                    "Público" => function($q){
-                        $q->where("control","<>", "PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("v2828","=","1");
-                    },
-                    "Privado" => function($q){
-                        $q->where("control","=", "PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("v2828","=","1");
-                    }
-                ]
+                "total" => function($q){
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                },
+                "doc"=> function($q){
+                    $q->whereIn("cv_estatus_captura", [0,10])->where("v2828","=","1");
+                }
             ],
             "Preescolar" => [
-                "gral" => [
-                    "Público" => function($q) {
-                        if($q->from == $this->ini_gral){
-                            $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("V478",">","0");
-                        }else{
-                            $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                        }
-                    },
-                    "Privado" => function($q) {
-                        if($q->from == $this->ini_gral){
-                            $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("V478",">","0");
-                        }else{
-                            $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                        }
+                "General" => function($q) {
+                    if($q->from == $this->ini_gral){
+                        $q->whereIn("cv_estatus_captura", [0,10])->where("V478",">","0");
+                    }else{
+                        $q->whereIn("cv_estatus_captura", [0,10]);
                     }
-                ],
-                "comuni" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ],
-                "ind" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ]
+                },
+                "Comunitario" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                },
+                "Indígena" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                }
             ],
             "Primaria" => [
-                "gral" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ],
-                "comuni" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ],
-                "ind" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ]
+                "General" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                },
+                "Comunitario" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                },
+                "Indígena" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                }
             ],
             "Secundaria" => [
-                "gral" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","GENERAL");
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","GENERAL");
-                    }
-                ],
-                "tele" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","TELESECUNDARIA");
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","TELESECUNDARIA");
-                    }
-                ],
-                "tec" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("subnivel","<>","GENERAL")->where("subnivel","<>","TELESECUNDARIA");
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10])->where("subnivel","<>","GENERAL")->where("subnivel","<>","TELESECUNDARIA");
-                    }
-                ],
-                "comuni" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->whereIn("cv_estatus_captura", [0,10]);
-                    }
-                ]
+                "General" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","GENERAL");
+                },
+                "Telesecundaria" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10])->where("subnivel","=","TELESECUNDARIA");
+                },
+                "Técnica" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10])->where("subnivel","<>","GENERAL")->where("subnivel","<>","TELESECUNDARIA");
+                },
+                "Comunitario" => function($q) {
+                    $q->whereIn("cv_estatus_captura", [0,10]);
+                }
             ],
             "Media Superior" => [
-                "gral" => [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
-                    }
-                ],
-                "tecno"=> [
-                    "Público" => function($q) {
-                        $q->where("control","<>","PRIVADO")->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
-                    },
-                    "Privado" => function($q) {
-                        $q->where("control","=","PRIVADO")->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
-                    }
-                ]
+                "Bachillerato General" => function($q) {
+                    $q->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
+                },
+                "Bachillerato Tecnológico" => function($q) {
+                    $q->where("cv_motivo","=","0")->whereNotIn("cv_estatus", [2,4]);
+                }
             ],
-            "Superior"=> [
-                "pos" => [
-                    "Público" => function($q) {
-                        if ($q->from == $this->sup_escuela) {
-                            $q->where("control","<>","PRIVADO")->where("cv_motivo","=","0")->where("V771",">","0");
-                        } else{
-                            $q->where("control","<>","PRIVADO")->where("cv_motivo","=","0");
-                        }
-                    },
-                    "Privado" => function($q) {
-                        if ($q->from == $this->sup_escuela) {
-                            $q->where("control","=","PRIVADO")->where("cv_motivo","=","0")->where("V771",">","0");
-                        } else{
-                            $q->where("control","=","PRIVADO")->where("cv_motivo","=","0");
-                        }
-                    }
-                ]
+            "Superior" => [
+                "Técnico Superior Universitario" => function($q) {
+                    $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","4%");
+                },
+                "Licenciatura" => function($q) {
+                    $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","5%");
+                },
+                "Especialidad" => function($q) {
+                    $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","6%");
+                },
+                "Maestría" => function($q) {
+                    $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","7%");
+                },
+                "Doctorado" => function($q) {
+                    $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","8%");
+                },
+                "Escuelas" => function($q) {
+                    $q->where("cv_motivo","=","0");
+                }
             ]
         ];
         $this->loadStatistics();

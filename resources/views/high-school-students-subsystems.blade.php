@@ -1,12 +1,17 @@
 @extends('layouts.app')
 
-@section('title','Matrícula en Media Superior por Subsistema')
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+
+@php
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
+@endphp
+
+@section('title','Matrícula en Media Superior por Subsistema ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Matrícula en Media Superior por Subsistema</h2>
+        <h2>Matrícula en Media Superior por Subsistema ({{ $period }})</h2>
     </center>
     <div>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
@@ -64,6 +69,9 @@
             </tr>
         </tfoot>
     </table>
+    <center class="mt-4">
+        <h2>Matrícula en Media Superior por Subsistema ({{ $period }})</h2>
+    </center>
     <div class="position-absolute start-50 translate-middle-x my-4">
         <center>Matrícula total: {{ number_format($municipality_total) }}</center>
         <canvas id="students_high_school_subsystems" class="bar-chart m-auto"></canvas>

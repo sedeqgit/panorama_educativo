@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title','Estadísticas de '.$level)
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -9,11 +7,15 @@
         if($number==0 && $total==0) return 0;
         return round(($number / $total) * 100, 2);
     }
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title','Estadísticas de '.$level.' ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Estadísticas de {{ $level }}</h2>
+        <h2>Estadísticas de {{ $level }} ({{ $period }})</h2>
     </center>
     <center>
         <h3>Por control</h3>

@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title','Instituciones con mayor matrícula en Superior'.$types)
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -9,11 +7,15 @@
     $totals = [];
     $iterations = 0;
     $others = 0;
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title','Instituciones con mayor matrícula en Superior '.$types.' ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Instituciones con mayor matrícula en Superior {{ $types }}</h2>
+        <h2>Instituciones con mayor matrícula en Superior {{ $types }} ({{ $period }})</h2>
     </center>
     <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">

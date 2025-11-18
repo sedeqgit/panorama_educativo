@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title','Carreras, matrículas, nuevo ingreso y egreso por campo de formación de '.$type)
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -11,11 +9,15 @@
         return round(($number / $total) * 100, 2);
     }
     ksort($statistics);
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title','Carreras, matrículas, nuevo ingreso y egreso por campo de formación de '.$type.' ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Carreras, matrículas, nuevo ingreso y egreso por campo de formación de {{ $type }}</h2>
+        <h2>Carreras, matrículas, nuevo ingreso y egreso por campo de formación de {{ $type }} ({{ $period }})</h2>
     </center>
     <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">

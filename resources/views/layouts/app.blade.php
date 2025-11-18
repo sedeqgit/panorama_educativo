@@ -8,7 +8,9 @@
         "2022-2023",
         "2023-2024",
         "2024-2025"
-    ]
+    ];
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
 <html lang="{{ str_replace("_", "-", app()->getLocale()) }}">
 <head>
@@ -33,7 +35,7 @@
                         <li class="nav-item">
                             <a href="{{ route("welcome-page") }}" class="nav-link active">Inicio</a>
                         </li>
-                        @foreach (array_reverse($periods) as $period)
+                        @if ($period!="")
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Estadísticas {{ $period }}
@@ -42,6 +44,9 @@
                                     <li class="dropdown-submenu">
                                         <a href="#" class="dropdown-item">Estadísticas generales</a>
                                         <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="{{ route("period_".$period.".eic") }}" class="dropdown-item">Estadísticas de inicio de ciclo</a>
+                                            </li>
                                             <li>
                                                 <a href="{{ route("period_".$period.".apg") }}" class="dropdown-item">Alumnos y docentes por género</a>
                                             </li>
@@ -182,7 +187,21 @@
                                     </li>
                                 </ul>
                             </li>
-                        @endforeach
+                        @endif
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ciclos escolares
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @foreach ($periods as $period)
+                                    <li>
+                                        <a href="{{ route("period_".$period.".index") }}" class="dropdown-item">
+                                            Estadísticas {{ $period }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

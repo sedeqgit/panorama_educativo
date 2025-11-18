@@ -8,6 +8,8 @@
     }
     function routeTitle($routeKey,$period):?string {
         switch ($routeKey) {
+            case 'eic':
+                return 'Estadística de inicio de ciclo';
             case 'apg':
                 return 'Alumnos y docentes por género';
             case 'atnes':

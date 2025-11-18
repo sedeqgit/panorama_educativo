@@ -1,12 +1,17 @@
 @extends('layouts.app')
 
-@section('title','Docentes por Subsistema en Educación Media Superior')
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+
+@php
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
+@endphp
+
+@section('title','Docentes por Subsistema en Educación Media Superior ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Docentes por Subsistema en Educación Media Superior</h2>
+        <h2>Docentes por Subsistema en Educación Media Superior ({{ $period }})</h2>
     </center>
     <div>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
@@ -62,6 +67,9 @@
             </tr>
         </tfoot>
     </table>
+    <center class="mt-4">
+        <h2>Docentes por Subsistema en Educación Media Superior ({{ $period }})</h2>
+    </center>
     <div class="position-absolute start-50 translate-middle-x my-4">
         <center>Total de docentes: {{ number_format($municipality_total) }}</center>
         <canvas id="teachers_high_school_subsystems" class="bar-chart m-auto"></canvas>

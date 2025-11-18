@@ -1,22 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Proporción de alumnos atendidos por tipo o nivel educativo')
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
-@section(section: 'content')
+@php
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
+@endphp
+
+@section('title', 'Proporción de alumnos atendidos por tipo o nivel educativo ('.$period.')')
+
+@section('content')
     <center>
-        <h2>Proporción de alumnos atendidos por tipo o nivel educativo</h2>
+        <h2>Proporción de alumnos atendidos por tipo o nivel educativo ({{ $period }})</h2>
     </center>
     <div class="position-absolute start-50 translate-middle-x">
     <canvas id="students_school_level_ratio" class="pie-chart m-auto"></canvas>
-        @if (isset($statistics["Media Superior"]) || isset($statistics["Superior"]))
+        <div class="mx-5 px-5">
             * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
             <br>
-        @endif
-        @if (isset($statistics["Superior"]))
             ** Incluye TSU, Licenciatura y Posgrado
-        @endif
+        </div>
     </div>
     <script type="module">
         let labels=[]

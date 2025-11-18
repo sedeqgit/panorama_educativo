@@ -60,8 +60,9 @@ foreach ($statisticsControllers as $period => $controllers){
             $periodRoutes = $allRoutes->filter(function ($route) use ($period){
                 return str_starts_with($route['uri'], $period);
             });
-            return view('year-index',['period' => $period, 'routes' => $periodRoutes]);
+            return view('period-index',['period' => $period, 'routes' => $periodRoutes]);
         })->name('.index');
+        Route::get('/estadistica-de-inicio-de-ciclo', [$controllers['general'], 'beginning_period_statistics'])->name('.eic');
         Route::get('/alumnos-y-docentes-por-genero', [$controllers['general'], 'students_teachers_gender'])->name('.apg');
         Route::get('/alumnos-atendidos-por-tipo-o-nivel-educativo-y-por-sostenimiento', [$controllers['general'], 'students_school_level_sustenance'])->name('.atnes');
         Route::get('/docentes-por-tipo-o-nivel-educativo-y-por-sostenimiento', [$controllers['general'], 'teachers_school_level_sustenance'])->name('.dtnes');

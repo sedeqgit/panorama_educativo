@@ -14,8 +14,8 @@ class Controller20 extends Base
                     "school_count" => "cct_ins_pla",
                     "male_students" => "V175",
                     "female_students" => "V176",
-                    "new_male_students" => "V21",
-                    "new_female_students" => "V22",
+                    "new_male_students" => "V88",
+                    "new_female_students" => "V89",
                     "graduate_male_students" => "V73",
                     "graduate_female_students" => "V74",
                     "male_teachers" => "0",
@@ -29,8 +29,8 @@ class Controller20 extends Base
                     "school_count" => "cct_ins_pla",
                     "male_students" => "V175",
                     "female_students" => "V176",
-                    "new_male_students" => "V21",
-                    "new_female_students" => "V22",
+                    "new_male_students" => "V88",
+                    "new_female_students" => "V89",
                     "graduate_male_students" => "V73",
                     "graduate_female_students" => "V74",
                     "male_teachers" => "0",
@@ -83,21 +83,12 @@ class Controller20 extends Base
                     "carriers" => "cv_carrera",
                     "groups" => "0"
                 ]
-            ],
-            "Escuelas"=> [
-                $this->sup_escuela => [
-                    "school_count"=> "DISTINCT cct_ins_pla",
-                    "male_students" => "0",
-                    "female_students" => "0",
-                    "new_male_students" => "0",
-                    "new_female_students" => "0",
-                    "graduate_male_students" => "0",
-                    "graduate_female_students" => "0",
-                    "male_teachers" => "V81",
-                    "female_teachers" => "V82",
-                    "groups" => "0"
-                ]
             ]
+        ];
+
+        $this->query_data_structure_for_schools_details = [
+            "male_teachers" => "V81",
+            "female_teachers" => "V82"
         ];
 
         $this->queries_data_structure_by_schools = [
@@ -139,23 +130,20 @@ class Controller20 extends Base
         ];
 
         $this->queries_rules = [
-            "Técnico Superior Universitario" => function($q) {
-                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","4%");
+            "Técnico Superior Universitario" => function($q,$fc="%") {
+                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","4".$fc);
             },
-            "Licenciatura" => function($q) {
-                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","5%");
+            "Licenciatura" => function($q,$fc="%") {
+                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","5".$fc);
             },
-            "Especialidad" => function($q) {
-                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","6%");
+            "Especialidad" => function($q,$fc="%") {
+                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","6".$fc);
             },
-            "Maestría" => function($q) {
-                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","7%");
+            "Maestría" => function($q,$fc="%") {
+                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","7".$fc);
             },
-            "Doctorado" => function($q) {
-                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","8%");
-            },
-            "Escuelas" => function($q) {
-                $q->where("cv_motivo","=","0");
+            "Doctorado" => function($q,$fc="%") {
+                $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","8".$fc);
             }
         ];
         $this->loadStatistics();

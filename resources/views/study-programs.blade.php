@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', $title)
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -9,11 +7,15 @@
     foreach($statistics as $type=>$data){
         if($type!="Escuelas") $sum+=$data['carriers'];
     }
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title', $title.' ('.$period.')')
 
 @section(section: 'content')
     <center>
-        <h2>{{ $title }}</h2>
+        <h2>{{ $title }} ({{ $period }})</h2>
         <p>Total de carreras: {{ number_format($sum) }}</p>
     </center>
     <canvas id="study_programs" class="pie-chart m-auto"></canvas>

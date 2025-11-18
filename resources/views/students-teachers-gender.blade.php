@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title','Alumnos y docentes por género')
-
 @vite(['resources/css/tables.css', 'resources/js/chart.js', 'resources/css/charts.css'])
 
 @php
@@ -9,11 +7,15 @@
         if($number==0 && $total==0) return 0;
         return round(($number / $total) * 100, 2);
     }
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title','Alumnos y docentes por género ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Alumnos y docentes por género</h2>
+        <h2>Alumnos y docentes por género ({{ $period }})</h2>
     </center>
     <div>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
@@ -45,7 +47,7 @@
                         <td>{{ $level }}</td>
                     @endif
                     @if ($level!="Especial (USAER)")
-                        <td class="text-center">
+                        <td class="text-center important-column">
                             {{ number_format($data['male_students'] + $data['female_students']) }}
                             <br>
                             {{ calculate_percentage($data['male_students'] + $data['female_students'],$totals['male_students'] + $totals['female_students']) }}%
@@ -63,7 +65,7 @@
                         <br>
                         {{ calculate_percentage($data['female_students'],$data['male_students'] + $data['female_students']) }}%
                     </td>
-                    <td class="text-center">
+                    <td class="text-center important-column">
                         {{ number_format($data['male_teachers'] + $data['female_teachers']) }}
                         <br>
                         {{ calculate_percentage($data['male_teachers'] + $data['female_teachers'],$totals['male_teachers'] + $totals['female_teachers']) }}%
@@ -80,6 +82,15 @@
                     </td>
                 </tr>
             @endforeach
+            <tr class="important-row">
+                <td>Básica + Media Superior + Superior</td>
+                <td class="text-center">{{ number_format($totals['male_students'] + $totals['female_students']) }}</td>
+                <td class="text-center">{{ number_format($totals['male_students']) }}</td>
+                <td class="text-center">{{ number_format($totals['female_students']) }}</td>
+                <td class="text-center">{{ number_format($totals['male_teachers'] + $totals['female_teachers']) }}</td>
+                <td class="text-center">{{ number_format($totals['male_teachers']) }}</td>
+                <td class="text-center">{{ number_format($totals['female_teachers']) }}</td>
+            </tr>
         </tbody>
         <tfoot>
             <tr>
@@ -104,10 +115,14 @@
                 <label class="btn btn-outline-primary" for="teachers">Docentes</label>
             </div>
         </div>
+        <center class="mt-4">
+            <h2 id="chart-title">Alumnos por género ({{ $period }})</h2>
+        </center>
         <canvas id="students_teachers_gender" class="bar-chart m-auto"></canvas>
     </div>
     <script type="module">
         const radioButtons=document.querySelectorAll('input[type="radio"]');
+        const chartTitle=document.getElementById("chart-title");
 
         const chart = new Chart("students_teachers_gender", {
             type: "bar",
@@ -138,7 +153,8 @@
                     datalabels: {
                         anchor: "end",
                         align: "top",
-                    }
+                    },
+
                 }
             }
         });
@@ -147,6 +163,7 @@
             let labels=[];
             let datasetsMap=[];
             let datasets=[]
+            let title;
             let yTitle;
             switch (option) {
                 case 'students':
@@ -157,7 +174,8 @@
                         datasetsMap["Hombres"].push({{ $data['male_students'] }});
                         datasetsMap["Mujeres"].push({{ $data['female_students'] }});
                     @endforeach
-                    yTitle="Alumnos atendidos"
+                    title="Alumnos por género ({{ $period }})";
+                    yTitle="Alumnos atendidos";
                     break;
                 case 'teachers':
                     @foreach ($statistics as $level=>$data)
@@ -167,7 +185,8 @@
                         datasetsMap["Hombres"].push({{ $data['male_teachers'] }});
                         datasetsMap["Mujeres"].push({{ $data['female_teachers'] }});
                     @endforeach
-                    yTitle="Cantidad de docentes"
+                    title="Docentes por género ({{ $period }})";
+                    yTitle="Cantidad de docentes";
                     break;
             }
             for (const key in datasetsMap){
@@ -180,6 +199,7 @@
                 labels: labels,
                 datasets: datasets
             }
+            chartTitle.innerHTML=title;
             chart.data=students_teachers_gender;
             chart.options.scales.y.title.text=yTitle;
             chart.update();

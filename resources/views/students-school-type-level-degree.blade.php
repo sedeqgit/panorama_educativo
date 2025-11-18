@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', $title)
-
 @vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
@@ -9,14 +7,23 @@
     foreach($statistics as $type=>$data){
         if($type!="Escuelas") $sum+=$data['male_students'] + $data['female_students'];
     }
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
+
+@section('title', $title.' ('.$period.')')
 
 @section(section: 'content')
     <center>
-        <h2>{{ $title }}</h2>
+        <h2>{{ $title }} ({{ $period }})</h2>
         <p>Matrícula total: {{ number_format($sum) }}</p>
     </center>
-    <canvas id="students_high_school_type" class="pie-chart m-auto"></canvas>
+    <div class="position-absolute start-50 translate-middle-x">
+        <canvas id="students_high_school_type" class="pie-chart m-auto"></canvas>
+        <div class="mx-5 px-5">
+            * Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
+        </div>
+    </div>
     <script type="module">
         let labels=[]
         let data=[]

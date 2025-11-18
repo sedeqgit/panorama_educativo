@@ -1,12 +1,17 @@
 @extends("layouts.app")
 
-@section("title","Estadísticas de $level - $subcontrol")
-
 @vite(["resources/css/tables.css","resources/js/chart.js","resources/css/charts.css"])
+
+@php
+    $route=request()->route()->uri();
+    $period=implode('/',array_slice(explode('/',$route),0,1));
+@endphp
+
+@section("title","Estadísticas de $level - $subcontrol (".$period.')')
 
 @section("content")
     <center>
-        <h2>Estadísticas de {{ $level }} - {{ $subcontrol }}</h2>
+        <h2>Estadísticas de {{ $level }} - {{ $subcontrol }} ({{ $period }})</h2>
     </center>
     @if ($subcontrol=="Federal Transferido")
         <p>Nota: Todas las instituciones Federales Transferidas son de sostenimiento público</p>

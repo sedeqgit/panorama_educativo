@@ -112,4 +112,4 @@ Chart.defaults.plugins.legend.onClick=null;
 Chart.defaults.plugins.legend.labels.usePointStyle=true;
 Chart.defaults.animation=false;
 
-Chart.overrides.pie.aspectRatio=1/3*4;
+Chart.overrides.pie.aspectRatio=4/3;
