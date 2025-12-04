@@ -68,15 +68,17 @@ foreach ($statisticsControllers as $period => $controllers){
         Route::get('/docentes-por-tipo-o-nivel-educativo-y-por-sostenimiento', [$controllers['general'], 'teachers_school_level_sustenance'])->name('.dtnes');
         Route::get('/escuelas-por-tipo-o-nivel-educativo-y-por-sostenimiento', [$controllers['general'], 'schools_school_level_sustenance'])->name('.etnes');
         Route::get('/proporción-de-alumnos-atendidos-por-tipo-o-nivel-educativo', [$controllers['general'], 'students_school_level_ratio'])->name('.patne');
-        Route::prefix('niveles')->group(function() use ($controllers){
+        Route::prefix('niveles')->group(function() use ($controllers,$period){
             Route::prefix('inicial-escolarizado')->name('.ini')->group(function() use ($controllers){
                 Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Inicial (Escolarizado)');
                 Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Inicial (Escolarizado)')->name('ft');
             });
-            Route::prefix('inicial-no-escolarizado')->name('.ine')->group(function() use ($controllers){
-                Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Inicial (No escolarizado)');
-                Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Inicial (No escolarizado)')->name('ft');
-            });
+            if($period!="2018-2019"){
+                Route::prefix('inicial-no-escolarizado')->name('.ine')->group(function() use ($controllers){
+                    Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Inicial (No escolarizado)');
+                    Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Inicial (No escolarizado)')->name('ft');
+                });
+            }
             Route::prefix('especial-cam')->name('.cam')->group(function() use ($controllers){
                 Route::get('/',[$controllers['general'], 'level_statistics'])->defaults('level','Especial (CAM)');
                 Route::get('/federal-transferido',[$controllers['general'], 'transfered_level_statistics'])->defaults('level','Especial (CAM)')->name('ft');
@@ -99,7 +101,6 @@ foreach ($statisticsControllers as $period => $controllers){
             });
             Route::prefix('media-superior')->name('.ms')->group(function() use ($controllers){
                 Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Media Superior');
-                Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Media Superior')->name('ft');
                 Route::get('/alumnos-por-tipo-de-bachillerato', [$controllers['general'],'students_high_school_type'])->name('.atb');
                 Route::get('/por-tipo-de-sostenimiento',[$controllers['general'],'high_schools_subcontrol'])->name('.ts');
                 Route::get('/matricula-por-subsistema',[$controllers['high_school'],'students_subsystems'])->name('.ms');
@@ -109,7 +110,6 @@ foreach ($statisticsControllers as $period => $controllers){
             });
             Route::prefix('superior')->name('.sup')->group(function() use ($controllers){
                 Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Superior');
-                Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Superior')->name('ft');
                 Route::get('/por-tipo-de-sostenimiento',[$controllers['general'],'universities_subcontrol'])->name('.ts');
                 Route::get('/matricula-por-nivel-o-grado', [$controllers['general'],'university_students_level_degree'])->name('.ang');
                 Route::get('/matricula-de-tsu-y-licenciatura', [$controllers['general'], 'tsu_lic_students'])->name('.atl');
@@ -124,15 +124,8 @@ foreach ($statisticsControllers as $period => $controllers){
                 Route::get('/instituciones-con-mayor-matricula-posgrado',[$controllers['university'], 'pos_higher_enrollment_institutions'])->name('.immp');
             });
         });
-        Route::get('/data-table', [$controllers['general'],'dataTable']);
-        Route::get('/data-debug', [$controllers['general'], 'retrieveStatistics']);
+        Route::get('/data-table', [$controllers['general'],'dataTable'])->name('.table');
+        Route::get('/data-debug', [$controllers['general'], 'retrieveStatistics'])->name('.debug');
     });
 }
 Route::get('/2021-2022/sample-charts', [App\Http\Controllers\Statistics\Controller21::class, 'sample_charts']);
-
-// Estadísticas historícas
-Route::get('/historico', [HistoricalStatisticsController::class, 'index']);
-
-Route::get('/laravel-welcome', function () {
-    return view('laravel-welcome');
-});

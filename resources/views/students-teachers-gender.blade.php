@@ -37,15 +37,19 @@
         <tbody>
             @foreach ($statistics as $level => $data)
                 <tr>
-                    @if ($level=="Especial (USAER)")
-                        <td>{{ $level }} *</td>
-                    @elseif ($level=="Media Superior")
-                        <td>{{ $level }} **</td>
-                    @elseif ($level=="Superior")
-                        <td>{{ $level }} **/***</td>
-                    @else
-                        <td>{{ $level }}</td>
-                    @endif
+                    @switch($level)
+                        @case("Especial (USAER)")
+                            <td>{{ $level }} *</td>
+                            @break
+                        @case("Media Superior")
+                            <td>{{ $level }} **</td>
+                            @break
+                        @case("Superior")
+                            <td>{{ $level }} **/***</td>
+                        @break
+                        @default
+                            <td>{{ $level }}</td>
+                    @endswitch
                     @if ($level!="Especial (USAER)")
                         <td class="text-center important-column">
                             {{ number_format($data['male_students'] + $data['female_students']) }}

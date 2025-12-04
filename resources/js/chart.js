@@ -15,18 +15,6 @@ Chart.defaults.scales.linear.grid={
     drawTicks: true,
     tickLength: 30
 }
-Chart.register({
-    id: "SpaceBetweenLegendAndChart",
-    beforeInit(chart) {
-        // Get a reference to the original fit function
-        const origFit = chart.legend.fit;
-        chart.legend.fit = function fit() {
-            origFit.bind(chart.legend)();
-            // Change the height to any desired value
-            this.height += 20;
-        }
-    }
-})
 
 Chart.register({
     id: "HideScalesForStackedBars",

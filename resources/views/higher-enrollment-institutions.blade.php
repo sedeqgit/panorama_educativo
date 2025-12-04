@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/university-tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
     arsort($statistics);

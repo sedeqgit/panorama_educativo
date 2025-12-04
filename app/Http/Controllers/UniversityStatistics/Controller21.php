@@ -83,21 +83,12 @@ class Controller21 extends Base
                     "carriers" => "cv_carrera",
                     "groups" => "0"
                 ]
-            ],
-            "Escuelas"=> [
-                $this->sup_escuela => [
-                    "school_count"=> "DISTINCT cct_ins_pla",
-                    "male_students" => "0",
-                    "female_students" => "0",
-                    "new_male_students" => "0",
-                    "new_female_students" => "0",
-                    "graduate_male_students" => "0",
-                    "graduate_female_students" => "0",
-                    "male_teachers" => "V81",
-                    "female_teachers" => "V82",
-                    "groups" => "0"
-                ]
             ]
+        ];
+
+        $this->query_data_structure_for_schools_details = [
+            "male_teachers" => "V81",
+            "female_teachers" => "V82"
         ];
 
         $this->queries_data_structure_by_schools = [

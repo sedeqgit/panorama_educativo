@@ -36,13 +36,16 @@
         <tbody>
             @foreach ($statistics as $level=>$sustenancetypes)
                 <tr>
-                    @if ($level=="Media Superior")
-                        <td>{{ $level }} *</td>
-                    @elseif ($level=="Superior")
-                        <td>{{ $level }} */**</td>
-                    @else
-                        <td>{{ $level }}</td>
-                    @endif
+                    @switch($level)
+                        @case("Media Superior")
+                            <td>{{ $level }} *</td>
+                            @break
+                        @case("Superior")
+                            <td>{{ $level }} */**</td>
+                            @break
+                        @default
+                            <td>{{ $level }}</td>
+                    @endswitch
                     @php
                         $subtotal=0;
                         foreach ($sustenancetypes as $sustenancetype => $data) {
@@ -56,7 +59,7 @@
                             {{ calculate_percentage($data['male_teachers'] + $data['female_teachers'],$subtotal) }}%
                         </td>
                     @endforeach
-                    <td class="text-center">
+                    <td class="text-center fw-bold">
                         {{ number_format($subtotal) }}
                         <br>
                         {{ calculate_percentage($subtotal,$total) }}%
@@ -127,7 +130,7 @@
                     x: {
                         title: {
                             display: true,
-                            text: "Nivel educativo",
+                            text: "Tipo o nivel educativo",
                             font: {
                                 size: 14,
                                 weight: 'bold'

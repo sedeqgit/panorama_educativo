@@ -43,7 +43,7 @@
             type: "pie",
             data: study_programs,
             options: {
-                radius: '60%',
+                radius: '75%',
                 responsive: true,
                 plugins: {
                     datalabels: {

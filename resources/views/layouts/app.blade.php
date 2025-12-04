@@ -70,9 +70,11 @@
                                             <li>
                                                 <a href="{{ route("period_".$period.".ini") }}" class="dropdown-item">Inicial (Escolarizado)</a>
                                             </li>
-                                            <li>
-                                                <a href="{{ route("period_".$period.".ine") }}" class="dropdown-item">Inicial (No Escolarizado)</a>
-                                            </li>
+                                            @if ($period!="2018-2019")
+                                                <li>
+                                                    <a href="{{ route("period_".$period.".ine") }}" class="dropdown-item">Inicial (No Escolarizado)</a>
+                                                </li>
+                                            @endif
                                             <li>
                                                 <a href="{{ route("period_".$period.".cam") }}" class="dropdown-item">Especial (CAM)</a>
                                             </li>
@@ -98,7 +100,7 @@
                                                         <a href="{{ route("period_".$period.".ms.atb") }}" class="dropdown-item">Alumnos inscritos por tipo de bachillerato</a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ route("period_".$period.".ms.ts") }}" class="dropdown-item">Matrícula y planteles o servicios por tipo de sostenimiento</a>
+                                                        <a href="{{ route("period_".$period.".ms.ts") }}" class="dropdown-item">Planteles y matrícula por tipo de sostenimiento en educación Media Superior</a>
                                                     </li>
                                                     <li class="dropdown-submenu">
                                                         <a href="#" class="dropdown-item">Subsistemas</a>

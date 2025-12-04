@@ -29,18 +29,6 @@ class Controller18 extends Base
                     ]
                 ]
             ],
-            "Inicial (No escolarizado)"=> [
-                "total"=> [
-                    $this->ini_ne => [
-                        "school_count" => "cv_cct",
-                        "male_students" => "V370",
-                        "female_students" => "V371",
-                        "male_teachers" => "V427",
-                        "female_teachers" => "V428",
-                        "groups" => "V143"
-                    ]
-                ]
-            ],
             "Especial (CAM)"=> [
                 "total" => [
                     $this->esp_cam => [
@@ -270,10 +258,17 @@ class Controller18 extends Base
             ]
         ];
 
-        $this->query_data_structure_for_university_schools_details = [
-            "school_count" => "DISTINCT cct_ins_pla",
-            "male_teachers" => "V81",
-            "female_teachers" => "V82"
+        $this->schools_details_query_data_structure = [
+            "Media Superior" => [
+                "school_count" => "cct_ins_pla",
+                "male_teachers" => "V104+V99",
+                "female_teachers" => "V105+V100"
+            ],
+            "Superior" => [
+                "school_count" => "DISTINCT cct_ins_pla",
+                "male_teachers" => "V81",
+                "female_teachers" => "V82"
+            ]
         ];
 
         $this->queries_rules = [

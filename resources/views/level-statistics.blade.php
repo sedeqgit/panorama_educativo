@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/js/chart.js','resources/css/charts.css'])
+
+@switch($level)
+    @case("Media Superior")
+        @vite(['resources/css/high-school-tables.css'])
+        @break
+    @case("Superior")
+        @vite(['resources/css/university-tables.css'])
+        @break
+    @default
+        @vite(['resources/css/tables.css'])
+@endswitch
 
 @php
     function calculate_percentage($number,$total){
@@ -327,7 +338,9 @@
             @endforeach
         </tbody>
     </table>
-    <center>
-        <a href="{{ route(Route::currentRouteName().'ft') }}" class="btn btn-primary">Ver estadísticas del nivel en Federal Transferido</a>
-    </center>
+    @if ($level!="Media Superior" && $level!="Superior")
+        <center>
+            <a href="{{ route(Route::currentRouteName().'ft') }}" class="btn btn-primary">Ver estadísticas del nivel en Federal Transferido</a>
+        </center>
+    @endif
 @endsection

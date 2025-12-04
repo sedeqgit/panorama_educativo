@@ -23,31 +23,78 @@
         <h2>{{ $title }} ({{ $period }})</h2>
     </center>
     <div class="position-absolute start-50 translate-middle-x container">
-        <div class="row">
+        <div class="row row-cols-2">
             <div class="col">
                 <p>Total {{ $campusesOrInstitutions }}*: {{ number_format($schools) }}</p>
                 <canvas id="schools_sustenance" class="stacked-bar-chart my-4"></canvas>
-                <canvas id="schools_sustenance_ratio" class="my-4"></canvas>
             </div>
             <div class="col">
-                <center>
-                    <h2></h2>
-                </center>
                 <p>Total alumnos: {{ number_format($students) }}</p>
                 <canvas id="students_school_sustenance" class="stacked-bar-chart my-4"></canvas>
-                <canvas id="students_school_sustenance_ratio" class="my-4"></canvas>
+            </div>
+            <div class="col">
+                * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
+                @switch($level)
+                    @case("Superior")
+                        ** Incluye TSU, Licenciatura y Posgrado. <br>
+                        *** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                    @case("Media Superior")
+                        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                @endswitch
+            </div>
+            <div class="col">
+                * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
+                @switch($level)
+                    @case("Superior")
+                        ** Incluye TSU, Licenciatura y Posgrado. <br>
+                        *** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                    @case("Media Superior")
+                        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                @endswitch
             </div>
         </div>
-        <div class="row">
-            * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
-            @if ($level=="Superior")
-                
-                ** Incluye TSU, Licenciatura y Posgrado. <br>
-                *** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
-            @endif
-            @if ($level=="Media Superior")
-                 ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto. <br>
-            @endif
+        <div class="row mt-4">
+            <center>
+                <h2>{{ $title }} ({{ $period }})</h2>
+            </center>
+        </div>
+        <div class="row row-cols-2">
+            <div class="col">
+                <p>Total {{ $campusesOrInstitutions }}*: {{ number_format($schools) }}</p>
+                <canvas id="schools_sustenance_ratio"></canvas>
+            </div>
+            <div class="col">
+                <p>Total alumnos: {{ number_format($students) }}</p>
+                <canvas id="students_school_sustenance_ratio"></canvas>
+            </div>
+            <div class="col">
+                * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
+                @switch($level)
+                    @case("Superior")
+                        ** Incluye TSU, Licenciatura y Posgrado. <br>
+                        *** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                    @case("Media Superior")
+                        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                @endswitch
+            </div>
+            <div class="col">
+                * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
+                @switch($level)
+                    @case("Superior")
+                        ** Incluye TSU, Licenciatura y Posgrado. <br>
+                        *** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                    @case("Media Superior")
+                        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto.
+                        @break
+                @endswitch
+            </div>
         </div>
     </div>
     <script type="module">
@@ -183,7 +230,7 @@
             type: "pie",
             data: schools_sustenance_ratio,
             options: {
-                radius: '60%',
+                radius: '66%',
                 responsive: true,
                 plugins: {
                     datalabels: {
@@ -201,7 +248,7 @@
             type: "pie",
             data: students_school_sustenance_ratio,
             options: {
-                radius: '60%',
+                radius: '66%',
                 responsive: true,
                 plugins: {
                     datalabels: {

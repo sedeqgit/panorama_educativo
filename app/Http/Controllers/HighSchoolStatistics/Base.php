@@ -52,38 +52,38 @@ class Base extends Controller
             "Tolimán"
         ];
         $this->subsystems_rules=[
-            "CEDART" => function($q){
-                $q->where("subsistema_2","=","INBA");
-            },
-            "DGETI" => function($q){
-                $q->where("subsistema_2","=","DGETIS");
-            },
-            "CAED" => function($q){
-                $q->where("subsistema_2","=","DGB");
-            },
-            "Privado" => function($q){
-                $q->where("subsistema_2","=","PARTICULAR");
-            },
-            "CONALEP" => function($q){
-                $q->where("subsistema_2","=","CONALEP");
-            },
-            "DGETAyCM" => function($q){
-                $q->where("subsistema_2","=","DGETAyCM");
-            },
-            "CENADAC" => function($q){
-                $q->where("subsistema_2","=","IEBAS");
-            },
             "COBAQ" => function($q){
                 $q->whereIn("subsistema_2",["COBACH", "EMSAD", "PREPA ABIERTA ESTATAL"]);
             },
             "CECyTEQ" => function($q){
                 $q->where("subsistema_2","=","CECYTE");
             },
+            "CONALEP" => function($q){
+                $q->where("subsistema_2","=","CONALEP");
+            },
             "Telebachillerato" => function($q){
                 $q->where("subsistema_2","=","TELEBACHILLERATO COMUNITARIO");
             },
+            "CENADAC" => function($q){
+                $q->where("subsistema_2","=","IEBAS");
+            },
             "UAQ" => function($q){
                 $q->where("subsistema_2","LIKE","UNIVERSIDADES AUT%NOMAS ESTATALES");
+            },
+            "DGETI" => function($q){
+                $q->where("subsistema_2","=","DGETIS");
+            },
+            "DGETAyCM" => function($q){
+                $q->where("subsistema_2","=","DGETAyCM");
+            },
+            "CAED" => function($q){
+                $q->where("subsistema_2","=","DGB");
+            },
+            "CEDART" => function($q){
+                $q->where("subsistema_2","=","INBA");
+            },
+            "Privado" => function($q){
+                $q->where("subsistema_2","=","PARTICULAR");
             }
         ];
         foreach ($municipalities as $i => $municipality) {
@@ -150,7 +150,8 @@ class Base extends Controller
         try{
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
-            return view('high-school-students-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+            $totals = $this->getStatisticsOfTotals();
+            return view('high-school-students-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -160,7 +161,8 @@ class Base extends Controller
         try{
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
-            return view('high-school-teachers-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+            $totals = $this->getStatisticsOfTotals();
+            return view('high-school-teachers-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -170,7 +172,8 @@ class Base extends Controller
         try{
             $subsystems = $this->getSubsystems();
             $totals_by_subsystem = $this->getStatisticsBySubsystems();
-            return view('high-school-schools-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem]);
+            $totals = $this->getStatisticsOfTotals();
+            return view('high-school-schools-subsystems',['statistics' => $this->statistics, 'subsystems' => $subsystems, 'totals_by_subsystem' => $totals_by_subsystem, 'totals' => $totals]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }

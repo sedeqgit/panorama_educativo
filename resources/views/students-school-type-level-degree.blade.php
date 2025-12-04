@@ -46,7 +46,7 @@
             type: "pie",
             data: students_high_school_type,
             options: {
-                radius: '60%',
+                radius: '75%',
                 responsive: true,
                 plugins: {
                     datalabels: {

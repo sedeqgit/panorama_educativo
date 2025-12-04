@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/high-school-tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
     $route=request()->route()->uri();
@@ -13,7 +13,16 @@
     <center>
         <h2>Matrícula en Media Superior por Subsistema ({{ $period }})</h2>
     </center>
-    <div>
+    <div class="container">
+        <center>Matrícula total: {{ number_format($totals['male_students'] + $totals['female_students']) }}</center>
+        <canvas id="students_high_school_subsystems" class="bar-chart m-auto"></canvas>
+        * CAED: Centro de Atención para Estudiantes con Discapacidad.
+        <br>
+        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
+    </div>
+    <center class="mt-4">
+        <h2>Matrícula en Media Superior por Subsistema ({{ $period }})</h2>
+    </center>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
@@ -69,16 +78,6 @@
             </tr>
         </tfoot>
     </table>
-    <center class="mt-4">
-        <h2>Matrícula en Media Superior por Subsistema ({{ $period }})</h2>
-    </center>
-    <div class="position-absolute start-50 translate-middle-x my-4">
-        <center>Matrícula total: {{ number_format($municipality_total) }}</center>
-        <canvas id="students_high_school_subsystems" class="bar-chart m-auto"></canvas>
-        * CAED: Centro de Atención para Estudiantes con Discapacidad.
-        <br>
-        ** Incluye alumnos de modalidades Escolarizado, No Escolarizado y Mixto
-    </div>
     <script type="module">
         let labels=[];
         let data=[];

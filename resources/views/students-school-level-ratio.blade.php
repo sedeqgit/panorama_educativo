@@ -27,13 +27,16 @@
 
         @foreach ($statistics as $level=>$data)
             @if ( $level != "Especial (USAER)")
-                @if ($level=="Media Superior")
-                    labels.push("{{ $level }} *");
-                @elseif ($level=="Superior")
-                    labels.push("{{ $level }} */**");
-                @else
-                    labels.push("{{ $level }}");
-                @endif
+                @switch($level)
+                    @case("Media Superior")
+                        labels.push("{{ $level }} *");
+                        @break
+                    @case("Superior")
+                        labels.push("{{ $level }} */**");
+                        @break
+                    @default
+                        labels.push("{{ $level }}");
+                @endswitch
                 data.push({{ $data['male_students'] + $data['female_students'] }});
             @endif
         @endforeach

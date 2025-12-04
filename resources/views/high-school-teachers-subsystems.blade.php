@@ -1,19 +1,28 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/high-school-tables.css','resources/js/chart.js','resources/css/charts.css'])
 
 @php
     $route=request()->route()->uri();
     $period=implode('/',array_slice(explode('/',$route),0,1));
 @endphp
 
-@section('title','Docentes por Subsistema en Educación Media Superior ('.$period.')')
+@section('title','Docentes en Media Superior por Subsistema ('.$period.')')
 
 @section('content')
     <center>
-        <h2>Docentes por Subsistema en Educación Media Superior ({{ $period }})</h2>
+        <h2>Docentes en Media Superior por Subsistema ({{ $period }})</h2>
     </center>
-    <div>
+    <div class="container">
+        <center>Total de docentes: {{ number_format($totals['male_teachers'] + $totals['female_teachers']) }}</center>
+        <canvas id="teachers_high_school_subsystems" class="bar-chart m-auto"></canvas>
+        * CAED: Centro de Atención para Estudiantes con Discapacidad.
+        <br>
+        * Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto
+    </div>
+    <center class="mt-4">
+        <h2>Docentes en Media Superior por Subsistema ({{ $period }})</h2>
+    </center>
     <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
@@ -67,16 +76,6 @@
             </tr>
         </tfoot>
     </table>
-    <center class="mt-4">
-        <h2>Docentes por Subsistema en Educación Media Superior ({{ $period }})</h2>
-    </center>
-    <div class="position-absolute start-50 translate-middle-x my-4">
-        <center>Total de docentes: {{ number_format($municipality_total) }}</center>
-        <canvas id="teachers_high_school_subsystems" class="bar-chart m-auto"></canvas>
-        * CAED: Centro de Atención para Estudiantes con Discapacidad.
-        <br>
-        * Incluye docentes de modalidades Escolarizado, No Escolarizado y Mixto
-    </div>
     <script type="module">
         let labels=[];
         let data=[];

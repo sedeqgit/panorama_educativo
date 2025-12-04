@@ -280,10 +280,17 @@ class Controller20 extends Base
             ]
         ];
 
-        $this->query_data_structure_for_university_schools_details = [
-            "school_count" => "DISTINCT cct_ins_pla",
-            "male_teachers" => "V81",
-            "female_teachers" => "V82"
+        $this->schools_details_query_data_structure = [
+            "Media Superior" => [
+                "school_count" => "cct_ins_pla",
+                "male_teachers" => "V104+V99",
+                "female_teachers" => "V105+V100"
+            ],
+            "Superior" => [
+                "school_count" => "DISTINCT cct_ins_pla",
+                "male_teachers" => "V81",
+                "female_teachers" => "V82"
+            ]
         ];
 
         $this->queries_rules = [

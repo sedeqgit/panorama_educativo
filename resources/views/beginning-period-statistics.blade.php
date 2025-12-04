@@ -51,15 +51,15 @@
                             $schools_total+=$data['school_count'];
                         }
                     @endphp
-                    <td class="text-center">{{ number_format($schools_total) }}</td>
+                    <td class="text-center fw-bold">{{ number_format($schools_total) }}</td>
                     @foreach ($controls as $control => $data)
                         <td class="text-center">{{ number_format($data['school_count']) }}</td>
                     @endforeach
-                    <td class="text-center">{{ number_format($students_total) }}</td>
+                    <td class="text-center fw-bold">{{ number_format($students_total) }}</td>
                     @foreach ($controls as $control => $data)
                         <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                     @endforeach
-                    <td class="text-center">{{ number_format($teachers_total) }}</td>
+                    <td class="text-center fw-bold">{{ number_format($teachers_total) }}</td>
                     @foreach ($controls as $control => $data)
                         <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
                     @endforeach
@@ -129,15 +129,15 @@
                                 $schools_total+=$data['school_count'];
                             }
                         @endphp
-                        <td class="text-center">{{ number_format($schools_total) }}</td>
+                        <td class="text-center fw-bold">{{ number_format($schools_total) }}</td>
                         @foreach ($controls as $control => $data)
                             <td class="text-center">{{ number_format($data['school_count']) }}</td>
                         @endforeach
-                        <td class="text-center">{{ number_format($students_total) }}</td>
+                        <td class="text-center fw-bold">{{ number_format($students_total) }}</td>
                         @foreach ($controls as $control => $data)
                             <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                         @endforeach
-                        <td class="text-center">{{ number_format($teachers_total) }}</td>
+                        <td class="text-center fw-bold">{{ number_format($teachers_total) }}</td>
                         @foreach ($controls as $control => $data)
                             <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
                         @endforeach

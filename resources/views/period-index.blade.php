@@ -39,11 +39,11 @@
             case 'ms.atb':
                 return 'Alumnos inscritos por tipo de bachillerato';
             case 'ms.ts':
-                return 'Matrícula y planteles o servicios por tipo de sostenimiento en educación Media Superior';
+                return 'Planteles y matrícula por tipo de sostenimiento en educación Media Superior';
             case 'ms.ms':
                 return 'Matrícula en Media Superior por Subsistema';
             case 'ms.ds':
-                return 'Docentes por Subsistema en Educación Media Superior';
+                return 'Docentes en Media Superior por Subsistema';
             case 'ms.ps':
                 return 'Planteles por Subsistema en Educación Media Superior';
             case 'ms.anies':
@@ -97,12 +97,12 @@
             @if ($key!="index")
                 @if ($title == "Inicial (Escolarizado)")
                     <h2>Estadísticas por niveles educativos</h2>
-                    <h3>{{ $title }}</h3>
+                    <a href="/{{ $route['uri'] }}"><h3>{{ $title }}</h3></a>
                 @elseif($title == "Inicial (No Escolarizado)" || $title == "Especial (CAM)" || $title == "Especial (USAER)" || $title == "Preescolar" || $title == "Primaria" || $title == "Secundaria" || $title == "Educación Media Superior" || $title == "Educación Superior")
-                    <h3>{{ $title }}</h3>
+                    <a href="/{{ $route['uri'] }}"><h3>{{ $title }}</h3></a>
+                @else
+                    <a href="/{{ $route['uri'] }}">{{ $title }}</a><br>
                 @endif
-                <a href="/{{ $route['uri'] }}">{{ $title }}</a>
-                <br>
             @endif
         @else
             @if ($iterations==0)
