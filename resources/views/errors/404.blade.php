@@ -11,7 +11,7 @@
     <div class="row vh-100 align-items-center justify-content-center">
          <div class="row">
             <div class="col-12 text-center">
-                <img src={{ asset("images/logo.png") }} style="height:100px; margin: 25px;">
+                <img src="{{ asset("images/logo.png") }}" style="height:100px; margin: 25px;">
                 <h1>Error 404</h1>
                 <p>No se ha encontrado la página.</p>
                 <p>Será redirigido al inicio en <span id="counter">5</span> segundos.</p>

@@ -50,7 +50,7 @@ $statisticsControllers = [
 // Rutas de las estadísticas escolares por año
 foreach ($statisticsControllers as $period => $controllers){
     Route::prefix($period)->name('period_'.$period)->group(function() use ($controllers, $period) {
-        Route::get('/', function() use ($period){
+        /*Route::get('/', function() use ($period){
             $allRoutes = collect(Route::getRoutes())->map(function($route){
                 return [
                     'uri' => $route->uri(),
@@ -60,8 +60,10 @@ foreach ($statisticsControllers as $period => $controllers){
             $periodRoutes = $allRoutes->filter(function ($route) use ($period){
                 return str_starts_with($route['uri'], $period);
             });
-            return view('period-index',['period' => $period, 'routes' => $periodRoutes]);
-        })->name('.index');
+            //return view('period-index',['period' => $period, 'routes' => $periodRoutes]);
+            return view('welcome',['period' => $period, 'routes' => $periodRoutes]);
+        })->name('.index');*/
+        
         Route::get('/estadistica-de-inicio-de-ciclo', [$controllers['general'], 'beginning_period_statistics'])->name('.eic');
         Route::get('/alumnos-y-docentes-por-genero', [$controllers['general'], 'students_teachers_gender'])->name('.apg');
         Route::get('/alumnos-atendidos-por-tipo-o-nivel-educativo-y-por-sostenimiento', [$controllers['general'], 'students_school_level_sustenance'])->name('.atnes');
@@ -76,7 +78,7 @@ foreach ($statisticsControllers as $period => $controllers){
             if($period!="2018-2019"){
                 Route::prefix('inicial-no-escolarizado')->name('.ine')->group(function() use ($controllers){
                     Route::get('/', [$controllers['general'], 'level_statistics'])->defaults('level','Inicial (No escolarizado)');
-                    Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Inicial (No escolarizado)')->name('ft');
+                    Route::get('/federal-transferido', [$controllers['general'], 'transfered_level_statistics'])->defaults('level','Inicial (No escolarizado)',)->name('ft');
                 });
             }
             Route::prefix('especial-cam')->name('.cam')->group(function() use ($controllers){

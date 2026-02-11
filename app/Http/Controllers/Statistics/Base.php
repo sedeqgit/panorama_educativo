@@ -137,6 +137,7 @@ class Base extends Controller
                                 $last_type=$type;
                                 if ($type=="gral_dir") $type = "General";
                                 if ($type=="doc") $type = "total";
+                                //if ($type=="doc") $type = "comuni";
                                 if (!isset($this->statistics[$municipality])) $this->statistics[$municipality] = [];
                                 if (!isset($this->statistics[$municipality][$level])) $this->statistics[$municipality][$level] = [];
                                 if (!isset($this->statistics[$municipality][$level][$type])) $this->statistics[$municipality][$level][$type] = [];
@@ -806,8 +807,9 @@ class Base extends Controller
 
     public function students_high_school_type(){
         try{
-            $statistics = $this->getStatisticsOfLevelByTypes("Media Superior");
-            return view('students-school-type-level-degree', ['statistics' => $statistics, "title" => 'Alumnos inscritos por tipo de bachillerato']);
+            $level="Media Superior";
+            $statistics = $this->getStatisticsOfLevelByTypes($level);
+            return view('students-school-type-level-degree', ['statistics' => $statistics, 'level' => $level, "title" => 'Alumnos inscritos por tipo de bachillerato']);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -825,8 +827,9 @@ class Base extends Controller
 
     public function university_students_level_degree(){
         try{
-            $statistics = $this->getStatisticsOfLevelByTypes('Superior');
-            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Matrícula de educación superior por nivel o grado"]);
+            $level='Superior';
+            $statistics = $this->getStatisticsOfLevelByTypes($level);
+            return view('students-school-type-level-degree', ["statistics" => $statistics, 'level' => $level, "title" => "Matrícula de educación superior por nivel o grado"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -834,8 +837,9 @@ class Base extends Controller
 
     public function tsu_lic_students(){
         try{
-            $statistics = $this->getStatisticsOfLevelAndTypes('Superior', ["Técnico Superior Universitario", "Licenciatura"]);
-            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Matrícula de educación superior (TSU y Licenciatura)"]);
+            $level='Superior';
+            $statistics = $this->getStatisticsOfLevelAndTypes($level, ["Técnico Superior Universitario", "Licenciatura"]);
+            return view('students-school-type-level-degree', ["statistics" => $statistics, 'level' => $level, "title" => "Matrícula de educación superior (TSU y Licenciatura)"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }
@@ -843,8 +847,9 @@ class Base extends Controller
 
     public function pos_students(){
         try{
-            $statistics = $this->getStatisticsOfLevelAndTypes('Superior', ["Especialidad","Maestría","Doctorado"]);
-            return view('students-school-type-level-degree', ["statistics" => $statistics, "title" => "Matrícula en posgrado por nivel o grado"]);
+            $level='Superior';
+            $statistics = $this->getStatisticsOfLevelAndTypes($level, ["Especialidad","Maestría","Doctorado"]);
+            return view('students-school-type-level-degree', ["statistics" => $statistics, 'level' => $level, "title" => "Matrícula en posgrado por nivel o grado"]);
         } catch (\Exception $e){
             return view('page-under-construction');
         }

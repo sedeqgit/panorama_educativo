@@ -1,16 +1,24 @@
 .table.qro-table-header thead {
-    --bs-table-bg: #242b57;
+    --bs-table-bg: #2a5724;
     --bs-table-color: #fff;
 }
 
 .table tr.important-row {
-    --bs-table-bg: #007481;
-    --bs-table-color: #fff;
+    --bs-table-bg: #63b4ff;
+    --bs-table-color: #000000;
     font-weight: bold;
 }
 
+
+
 .table td.important-column {
-    --bs-table-bg: #007481;
-    --bs-table-color: #fff;
+    --bs-table-bg: #63b4ff;
+    --bs-table-color: #000000;
+    font-weight: bold;
+}
+
+.table td.important-col {
+    --bs-table-bg: #63b4ff;
+    --bs-table-color: #000000;
     font-weight: bold;
 }

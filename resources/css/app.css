@@ -4,16 +4,21 @@
 h1 {
     font-weight: 700;
 }
+
 h2 {
     font-weight: 600;
 }
+
+
 body {
     font-family: 'Hanken Grotesk', sans-serif;
+    background-color: #f4f6f9;
 }
 
 .dropdown-item {
     white-space: normal !important;
     word-break: break-word !important;
+    
 }
 
 .dropdown-submenu {
@@ -23,4 +28,259 @@ body {
 .dropdown-submenu > .dropdown-menu {
     top: 0;
     left: 100%;
+    
+}
+
+/* Mejora de responsividad para submenús en dispositivos móviles */
+@media (max-width: 991.98px) { /* Breakpoint 'lg' de Bootstrap */
+    .dropdown-submenu > .dropdown-menu {
+        position: static; /* Evita que flote a la derecha */
+        left: auto;
+        width: 100%;
+        border: none;
+        box-shadow: none;
+        background-color: #f0f2f5; /* Un color de fondo suave para distinguirlo */
+    }
+}
+
+.logo-img {
+  height: 50px;
+  margin: 10px;
+}
+
+/*
+ * Solución para el desbordamiento del logo en pantallas muy pequeñas.
+ * Reduce el tamaño y el margen del logo cuando el espacio es limitado.
+*/
+@media (max-width: 400px) {
+  .logo-img {
+    height: 40px; /* Reducimos la altura */
+    margin: 5px;  /* Reducimos el margen */
+  }
+}
+
+/* Permitir que los elementos del menú principal se ajusten en varias líneas si no hay espacio */
+.navbar-nav {
+    flex-wrap: wrap;
+}
+
+
+/* Estilo base para los enlaces del navbar */
+.navbar-nav .nav-link {
+  position: relative;
+  color: #333;
+  padding: 8px 12px;
+  transition: color 0.3s ease;
+}
+.navbar .dropdown-toggle::after {
+  border-top-color: #3a8c88;
+}
+
+
+/* Línea inferior al pasar el mouse */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  border-radius: 0%;
+  left: 0;
+  bottom: 0;
+  top: 5px;
+  width: 0%;
+  height: 3px;
+  background-color: #3a8c88; /* verde institucional */
+  transition: width 0.3s ease;
+}
+
+/* Activación del efecto hover */
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+/* Color del texto al pasar el mouse */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #3a8c88;
+}
+
+
+/* Submenús: evitar fondo completo */
+.dropdown-menu .dropdown-item {
+  position: relative;
+  color: #333;
+  transition: color 0.3s ease;
+  background-color: transparent;
+}
+
+/* Línea inferior en submenús */
+.dropdown-menu .dropdown-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0%;
+  height: 2px;
+  background-color: #3a8c88;
+  transition: width 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item:hover::after,
+.dropdown-menu .dropdown-item.active::after {
+  width: 100%;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item.active {
+  color: #3a8c88;
+  background-color: transparent !important;
+}
+
+
+/* barra azul arriba de navbar*/
+.colorbarra {
+    background-color: #266FB6;
+    padding: 0; 
+    border-bottom: 1px solid #EEE;
+}
+
+.top-links-container,
+#top-social {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+    gap: 0; 
+    align-items: center;
+    justify-content: center; /* Centra los elementos, útil en móvil */
+}
+
+
+.top-links-container a,
+#top-social a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3); /* Cambiamos a borde izquierdo para un ajuste responsivo consistente */
+    transition: background-color 0.3s ease; 
+    font-size: 13px;
+    height: 100%; 
+}
+
+/* Añadimos un borde derecho solo al último elemento para 'cerrar' el contenedor visualmente */
+.top-links-container li:last-child a,
+#top-social li:last-child a {
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.top-links-container a:hover,
+#top-social a:hover {
+    background-color: rgba(255, 255, 255, 0.2); 
+    opacity: 1; 
+}
+
+
+.ts-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.ts-text {
+    font-size: 13px;
+    /* Propiedades para ocultar y animar el texto */
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.35s ease-out, margin-left 0.35s ease-out;
+}
+
+/* Muestra el texto al pasar el cursor o al seleccionar el enlace */
+#top-social a:hover .ts-text,
+#top-social a:focus .ts-text {
+    max-width: 100px; /* Ancho suficiente para el texto */
+    margin-left: 8px; /* Espacio entre el ícono y el texto */
+}
+
+.sedeq-title {
+        color: #266fb6;
+        font-weight: 700;
+        margin-bottom: 10px;
+}
+
+.sedeq-subtitle {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+
+.stat-card {
+    background: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+    overflow: hidden;
+    border-bottom: 4px solid transparent; 
+}
+
+.stat-card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(38, 111, 182, 0.15); 
+    border-bottom: 4px solid #266fb6; 
+    color: inherit;
+}
+
+.card-icon {
+    font-size: 3rem;
+    color: #266fb6;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.card-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.boton-descarga{
+  background-color: #242B57;
+  color: #fff;
+}
+
+/* Estilos para el carrusel de la página de bienvenida */
+.carousel-item img {
+    object-fit: cover; 
+    object-position: center;
+    height: 550px; 
+    width: 100%;
+    border-radius: 50px;
+}
+
+@media (max-width: 768px) {
+    .carousel-item img {
+        height: 300px; /* Una altura más adecuada para tabletas */
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-item img {
+        height: 250px; /* Una altura más adecuada para móviles */
+    }
 }

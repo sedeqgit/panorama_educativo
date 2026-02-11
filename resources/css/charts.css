@@ -4,4 +4,21 @@
 }
 .pie-chart {
     height: 900px;
+    /*max-width: 100%;
+    height: auto !important;*/
+}
+
+.chart-container {
+    position: relative;
+    margin: 20px auto;
+    height: 40vh; /* Altura relativa al viewport */
+    width: 80vw;  /* Ancho relativo al viewport */
+    max-width: 900px; /* Un ancho máximo para pantallas grandes */
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .chart-container {
+        width: 95vw; /* Ocupar más ancho en móviles */
+    }
 }

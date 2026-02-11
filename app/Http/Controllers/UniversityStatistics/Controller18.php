@@ -18,8 +18,8 @@ class Controller18 extends Base
                     "new_female_students" => "V89",
                     "graduate_male_students" => "V73",
                     "graduate_female_students" => "V74",
-                    "male_teachers" => "0",
-                    "female_teachers" => "0",
+                    "male_teachers" => "V81",
+                    "female_teachers" => "V82",
                     "carriers" => "cv_carrera",
                     "groups" => "0"
                 ]

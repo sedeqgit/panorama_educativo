@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@vite(['resources/css/high-school-tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/high-school-tables.css','resources/js/high-school-charts.js','resources/css/charts.css', 'resources/js/graficos.js', ])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @php
     $route=request()->route()->uri();
@@ -15,6 +16,9 @@
     </center>
     <div class="container">
         <center>Total de docentes: {{ number_format($totals['male_teachers'] + $totals['female_teachers']) }}</center>
+        <center class="mt-2"><!--boton de descarga de grafica-->
+            <button id="descargarGraficaBtn" class="btn boton-descarga">Descargar gráfica</button>
+        </center>
         <canvas id="teachers_high_school_subsystems" class="bar-chart m-auto"></canvas>
         * CAED: Centro de Atención para Estudiantes con Discapacidad.
         <br>
@@ -23,7 +27,12 @@
     <center class="mt-4">
         <h2>Docentes en Media Superior por Subsistema ({{ $period }})</h2>
     </center>
-    <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="datosTabla" 
+                data-filename="Docentes-en-Media-Superior-por-Subsistema-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="datosTabla" class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Municipio</th>
@@ -98,9 +107,22 @@
             ]
         }
 
-        new Chart("teachers_high_school_subsystems", {
+        const myChart = new Chart("teachers_high_school_subsystems", {
             type: "bar",
             data: teachers_high_school_subsystems,
+            /*plugins: [{ /*configuracion de backgrond
+                id: 'customCanvasBackgroundColor',
+                beforeDraw: (chart, args, options) => {
+                    const {
+                        ctx
+                    } = chart;
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = options.color || 'white';
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                }
+            }],*/
             options: {
                 responsive: true,
                 scales: {
@@ -136,5 +158,13 @@
                 }
             }
         });
+
+        document.getElementById('descargarGraficaBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = myChart.toBase64Image(); // Convierte el canvas a imagen
+            enlace.download = 'grafica-teachers-high-school-subsistema-{{$period}}.png'; // Nombre del archivo
+            enlace.click();
+        });
     </script>
+@include('layouts.footer')
 @endsection

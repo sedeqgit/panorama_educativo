@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@vite(['resources/css/high-school-tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/high-school-tables.css','resources/js/high-school-charts.js','resources/css/charts.css', 'resources/js/graficos.js', ])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @php
     $totals=[];
@@ -19,8 +20,13 @@
     <center>
         <h2>Alumnos, Alumnos de Nuevo Ingreso  y Egresados por Subsistemas ({{ $period }})</h2>
     </center>
-    <div>
-    <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="tabla" 
+                data-filename="Alumnos-por-Subsistema-{{$period}}.png">Descargar tabla</button>
+    </div>
+    
+    <table id="tabla" class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Subsistema</th>
@@ -104,4 +110,5 @@
             </tr>
         </tfoot>
     </table>
+    @include('layouts.footer')
 @endsection

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@vite(['resources/css/high-school-tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/high-school-tables.css','resources/js/high-school-charts.js','resources/css/charts.css', 'resources/js/graficos.js', ])
 
 @php
     $route=request()->route()->uri();
@@ -9,22 +9,33 @@
 
 @section('title','Planteles en Media Superior por Subsistema ('.$period.')')
 
-
+        
 @section('content')
     <center>
         <h2>Planteles en Media Superior por Subsistema ({{ $period }})</h2>
+        
     </center>
     <div class="container">
         <center>Total de planteles: {{ number_format($totals['school_count']) }}</center>
+        <center class="mt-2"><!--boton de descarga de grafica-->
+            <button id="descargarGraficaBtn" class="btn boton-descarga">Descargar gráfica</button>
+        </center>
         <canvas id="schools_high_school_subsystems" class="bar-chart m-auto"></canvas>
+        <br>
         * CAED: Centro de Atención para Estudiantes con Discapacidad.
         <br>
         ** En el total de Escuelas de Media Superior se cuantifican planteles
     </div>
     <center class="mt-4">
         <h2>Planteles en Media Superior por Subsistema ({{ $period }})</h2>
+        
     </center>
-    <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="datosSubsistemas" 
+                data-filename="Planteles-en-Media-Superior-por-Subsistema-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="datosSubsistemas" class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Municipio</th>
@@ -77,6 +88,7 @@
             </tr>
         </tfoot>
     </table>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="module">
         let labels=[];
         let data=[];
@@ -98,10 +110,23 @@
                 }
             ]
         }
-
-        new Chart("schools_high_school_subsystems", {
+        /*se crea la variable*/
+        const miGrafico = new Chart("schools_high_school_subsystems", {
             type: "bar",
             data: schools_high_school_subsystems,
+            /*plugins: [{ /*configuracion de backgrond
+                id: 'customCanvasBackgroundColor',
+                beforeDraw: (chart, args, options) => {
+                    const {
+                        ctx
+                    } = chart;
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = options.color || 'white';
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                }
+            }],*/
             options: {
                 responsive: true,
                 scales: {
@@ -137,5 +162,14 @@
                 }
             }
         });
+
+        document.getElementById('descargarGraficaBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = miGrafico.toBase64Image(); // Convierte el canvas a imagen
+            enlace.download = 'grafica-planteles-subsistema-{{$period}}.png'; // Nombre del archivo
+            enlace.click();
+        });
+
     </script>
+    @include('layouts.footer')
 @endsection

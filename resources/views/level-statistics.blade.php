@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@vite(['resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/js/charts.js','resources/css/charts.css', 'resources/js/graficos.js'])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @switch($level)
     @case("Media Superior")
@@ -25,14 +26,21 @@
 @section('title','Estadísticas de '.$level.' ('.$period.')')
 
 @section('content')
-    <center>
-        <h2>Estadísticas de {{ $level }} ({{ $period }})</h2>
-    </center>
-    <center>
-        <h3>Por control</h3>
-    </center>        
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
-        <thead class="text-center align-middle">
+    <h2 class="text-center">Estadísticas de {{ $level }} ({{ $period }})</h2>
+        @if ($level=="Superior")
+            <div>
+                <h3 class="text-center">**La suma de profesores ya esta realiza, dividirlos por nivel no se puede porque existe el riesgo de duplicidad**</h3>
+            </div>
+        @endif
+    <h3 class="text-center mt-4">Por control</h3>
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="porControl" 
+                data-filename="Estadisticas-por-control-{{$level}}-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <div class="table-responsive">
+        <table id="porControl" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+            <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Tipo educativo</th>
                 <th colspan="3">Alumnos</th>
@@ -69,37 +77,37 @@
                         $schools_total+=$data['school_count'];
                     }
                 @endphp
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($students_total) }}
                     <br>
                     {{ calculate_percentage($students_total,$students_total) }}%
                 </td>
                 @foreach ($totals1 as $control => $data)
-                    <td class="text-center">
+                    <td class="text-center important-col">
                         {{ number_format($data['male_students'] + $data['female_students']) }}
                         <br>
                         {{ calculate_percentage($data['male_students'] + $data['female_students'],$students_total) }}%
                     </td>
                 @endforeach
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($teachers_total) }}
                     <br>
                     {{ calculate_percentage($teachers_total,$teachers_total) }}%
                 </td>
                 @foreach ($totals1 as $control => $data)
-                    <td class="text-center">
+                    <td class="text-center important-col">
                         {{ number_format($data['male_teachers'] + $data['female_teachers']) }}
                         <br>
                         {{ calculate_percentage($data['male_teachers'] + $data['female_teachers'],$teachers_total) }}%
                     </td>
                 @endforeach
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($schools_total) }}
                     <br>
                     {{ calculate_percentage($schools_total,$schools_total) }}%
                 </td>
                 @foreach ($totals1 as $control => $data)
-                    <td class="text-center">
+                    <td class="text-center important-col">
                         {{ number_format($data['school_count']) }}
                         <br>
                         {{ calculate_percentage($data['school_count'],$schools_total) }}%
@@ -120,7 +128,7 @@
                                 $schools+=$data['school_count'];
                             }
                         @endphp
-                        <td class="text-center">
+                        <td class="text-center important-col">
                             {{ number_format($students) }}
                             <br>
                             {{ calculate_percentage($students,$students_total) }}%
@@ -132,7 +140,7 @@
                                 {{ calculate_percentage($data['male_students'] + $data['female_students'],$students) }}%
                             </td>
                         @endforeach
-                        <td class="text-center">
+                        <td class="text-center important-col">
                             {{ number_format($teachers) }}
                             <br>
                             {{ calculate_percentage($teachers,$teachers_total) }}%
@@ -144,7 +152,7 @@
                                 {{ calculate_percentage($data['male_teachers'] + $data['female_teachers'],$teachers) }}%
                             </td>
                         @endforeach
-                        <td class="text-center">
+                        <td class="text-center important-col">
                             {{ number_format($schools) }}
                             <br>
                             {{ calculate_percentage($schools,$schools_total) }}%
@@ -160,12 +168,17 @@
                 @endif
             @endforeach
         </tbody>
-    </table>
-    <center>
-        <h3>Alumnos, docentes y escuelas</h3>
-    </center>
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
-        <thead class="text-center align-middle">
+        </table>
+    </div>
+    <h3 class="text-center mt-4">Alumnos, docentes y escuelas</h3>
+    <div class="table-responsive">
+        <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="ade" 
+                data-filename="Alumnos-docentes-y-escuelas-{{$level}}-{{$period}}.png">Descargar tabla</button>
+        </div>
+        <table id="ade" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+            <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Tipo educativo</th>
                 <th colspan="3">Alumnos</th>
@@ -199,32 +212,32 @@
                     <br>
                     {{ calculate_percentage($students_total,$students_total) }}%
                 </td>
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($totals2['male_students']) }}
                     <br>
                     {{ calculate_percentage($totals2['male_students'],$students_total) }}%
                 </td>
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($totals2['female_students']) }}
                     <br>
                     {{ calculate_percentage($totals2['female_students'],$students_total) }}%
                 </td>
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($teachers_total) }}
                     <br>
                     {{ calculate_percentage($teachers_total,$teachers_total) }}%
                 </td>
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($totals2['male_teachers']) }}
                     <br>
                     {{ calculate_percentage($totals2['male_teachers'],$teachers_total) }}%
                 </td>
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($totals2['female_teachers']) }}
                     <br>
                     {{ calculate_percentage($totals2['female_teachers'],$teachers_total) }}%
                 </td>
-                <td class="text-center">
+                <td class="text-center important-col">
                     {{ number_format($schools_total) }}
                     <br>
                     {{ calculate_percentage($schools_total,$schools_total) }}%
@@ -239,7 +252,7 @@
                             $teachers=$data['male_teachers'] + $data['female_teachers'];
                             $schools=$data['school_count'];
                         @endphp
-                        <td class="text-center">
+                        <td class="text-center important-col">
                             {{ number_format($students) }}
                             <br>
                             {{ calculate_percentage($students,$students_total) }}%
@@ -254,7 +267,7 @@
                             <br>
                             {{ calculate_percentage($data['female_students'],$students) }}%
                         </td>
-                        <td class="text-center">
+                        <td class="text-center important-col">
                             {{ number_format($teachers) }}
                             <br>
                             {{ calculate_percentage($teachers,$teachers_total) }}%
@@ -269,7 +282,7 @@
                             <br>
                             {{ calculate_percentage($data['female_teachers'],$teachers) }}%
                         </td>
-                        <td class="text-center">
+                        <td class="text-center important-col">
                             {{ number_format($schools) }}
                             <br>
                             {{ calculate_percentage($schools,$schools_total) }}%
@@ -278,12 +291,17 @@
                 @endif
             @endforeach
         </tbody>
-    </table>
-    <center>
-        <h3>Por municipios</h3>
-    </center>
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
-        <thead class="text-center align-middle">
+        </table>
+    </div>
+    <h3 class="text-center mt-4">Por municipios</h3>
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+            data-target-id="PorMunicipios" 
+            data-filename="Por-municipios-{{$level}}-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <div class="table-responsive">
+        <table id="PorMunicipios" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+            <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Nivel / Municipio</th>
                 <th colspan="3">Alumnos</th>
@@ -310,13 +328,13 @@
         <tbody>
             <tr class="important-row">
                 <td>{{ $level }}</td>
-                <td class="text-center">{{ number_format($totals2['male_students'] + $totals2['female_students']) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['male_students'] + $totals2['female_students']) }}</td>
                 <td class="text-center">{{ number_format($totals2['male_students']) }}</td>
                 <td class="text-center">{{ number_format($totals2['female_students']) }}</td>
-                <td class="text-center">{{ number_format($totals2['male_teachers'] + $totals2['female_teachers']) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['male_teachers'] + $totals2['female_teachers']) }}</td>
                 <td class="text-center">{{ number_format($totals2['male_teachers']) }}</td>
                 <td class="text-center">{{ number_format($totals2['female_teachers']) }}</td>
-                <td class="text-center">{{ number_format($totals2['school_count']) }}</td>
+                <td class="text-center ">{{ number_format($totals2['school_count']) }}</td>
                 <td class="text-center">{{ number_format($totals1['Público']['school_count']) }}</td>
                 <td class="text-center">{{ number_format($totals1['Privado']['school_count']) }}</td>
             </tr>
@@ -324,23 +342,25 @@
                 @if (($data['male_students']+$data['female_students'])>0)
                     <tr>
                         <td>{{ $municipality }}</td>
-                        <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                         <td class="text-center">{{ number_format($data['male_students']) }}</td>
                         <td class="text-center">{{ number_format($data['female_students']) }}</td>
-                        <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
                         <td class="text-center">{{ number_format($data['male_teachers']) }}</td>
                         <td class="text-center">{{ number_format($data['female_teachers']) }}</td>
-                        <td class="text-center">{{ number_format($data['school_count']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['school_count']) }}</td>
                         <td class="text-center">{{ number_format($stats4[$municipality]['Público']['school_count']) }}</td>
                         <td class="text-center">{{ number_format($stats4[$municipality]['Privado']['school_count']) }}</td>
                     </tr>
                 @endif
             @endforeach
         </tbody>
-    </table>
+        </table>
+    </div>
     @if ($level!="Media Superior" && $level!="Superior")
-        <center>
-            <a href="{{ route(Route::currentRouteName().'ft') }}" class="btn btn-primary">Ver estadísticas del nivel en Federal Transferido</a>
-        </center>
+        <div class="text-center mt-4">
+            <a href="{{ route(Route::currentRouteName().'ft') }}" class="btn boton-descarga">Ver estadísticas del nivel en Federal Transferido</a>
+        </div>
     @endif
+@include('layouts.footer')
 @endsection

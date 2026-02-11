@@ -1,6 +1,7 @@
 @extends("layouts.app")
 
-@vite(["resources/css/tables.css","resources/js/chart.js","resources/css/charts.css"])
+@vite(["resources/css/federal.css","resources/js/charts.js","resources/css/charts.css", "resources/js/graficos.js"])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @php
     $route=request()->route()->uri();
@@ -13,13 +14,21 @@
     <center>
         <h2>Estadísticas de {{ $level }} - {{ $subcontrol }} ({{ $period }})</h2>
     </center>
-    @if ($subcontrol=="Federal Transferido")
-        <p>Nota: Todas las instituciones Federales Transferidas son de sostenimiento público</p>
-    @endif
+    <center>
+        @if ($subcontrol=="Federal Transferido")
+            <p>Nota: Todas las instituciones Federales Transferidas son de sostenimiento público</p>
+        @endif
+    </center>
+    
     <center>
         <h3>Alumnos, docentes y escuelas</h3>
     </center>
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="ade" 
+                data-filename="Alumnos-docentes-y-escuelas-{{$level}}-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="ade" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Tipo educativo</th>
@@ -44,10 +53,10 @@
         <tbody>
             <tr class="important-row">
                 <td>{{ $level }}</td>
-                <td class="text-center">{{ number_format($totals["male_students"] + $totals["female_students"]) }}</td>
+                <td class="text-center  ">{{ number_format($totals["male_students"] + $totals["female_students"]) }}</td>
                 <td class="text-center">{{ number_format($totals["male_students"]) }}</td>
                 <td class="text-center">{{ number_format($totals["female_students"]) }}</td>
-                <td class="text-center">{{ number_format($totals["male_teachers"] + $totals["female_teachers"]) }}</td>
+                <td class="text-center ">{{ number_format($totals["male_teachers"] + $totals["female_teachers"]) }}</td>
                 <td class="text-center">{{ number_format($totals["male_teachers"]) }}</td>
                 <td class="text-center">{{ number_format($totals["female_teachers"]) }}</td>
                 <td class="text-center">{{ number_format($totals["school_count"]) }}</td>
@@ -56,10 +65,10 @@
                 @if($type!="total")
                     <tr>
                         <td>{{ $type }}</td>
-                        <td class="text-center">{{ number_format($data["male_students"] + $data["female_students"]) }}</td>
+                        <td class="text-center important-col">{{ number_format($data["male_students"] + $data["female_students"]) }}</td>
                         <td class="text-center">{{ number_format($data["male_students"]) }}</td>
                         <td class="text-center">{{ number_format($data["female_students"]) }}</td>
-                        <td class="text-center">{{ number_format($data["male_teachers"] + $data["female_teachers"]) }}</td>
+                        <td class="text-center important-col">{{ number_format($data["male_teachers"] + $data["female_teachers"]) }}</td>
                         <td class="text-center">{{ number_format($data["male_teachers"]) }}</td>
                         <td class="text-center">{{ number_format($data["female_teachers"]) }}</td>
                         <td class="text-center">{{ number_format($data["school_count"]) }}</td>
@@ -71,7 +80,12 @@
     <center>
         <h3>Por municipios</h3>
     </center>
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+            data-target-id="PorMunicipios" 
+            data-filename="Por-municipios-{{$level}}-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="PorMunicipios" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Nivel / Municipio</th>
@@ -108,10 +122,10 @@
                 @if (($data["male_students"]+$data["female_students"])>0)
                     <tr>
                         <td>{{ $municipality }}</td>
-                        <td class="text-center">{{ number_format($data["male_students"] + $data["female_students"]) }}</td>
+                        <td class="text-center important-col">{{ number_format($data["male_students"] + $data["female_students"]) }}</td>
                         <td class="text-center">{{ number_format($data["male_students"]) }}</td>
                         <td class="text-center">{{ number_format($data["female_students"]) }}</td>
-                        <td class="text-center">{{ number_format($data["male_teachers"] + $data["female_teachers"]) }}</td>
+                        <td class="text-center important-col">{{ number_format($data["male_teachers"] + $data["female_teachers"]) }}</td>
                         <td class="text-center">{{ number_format($data["male_teachers"]) }}</td>
                         <td class="text-center">{{ number_format($data["female_teachers"]) }}</td>
                         <td class="text-center">{{ number_format($data["school_count"]) }}</td>
@@ -120,4 +134,5 @@
             @endforeach
         </tbody>
     </table>
+@include('layouts.footer')
 @endsection

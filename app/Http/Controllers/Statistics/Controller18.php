@@ -364,9 +364,6 @@ class Controller18 extends Base
                 },
                 "Doctorado" => function($q) {
                     $q->where("cv_motivo","=","0")->where("cv_carrera","LIKE","8%");
-                },
-                "Escuelas" => function($q) {
-                    $q->where("cv_motivo","=","0");
                 }
             ]
         ];

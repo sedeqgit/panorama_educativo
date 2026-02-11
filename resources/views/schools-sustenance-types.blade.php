@@ -1,6 +1,15 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/charts.css'])
+
+@switch($level)
+    @case("Media Superior")
+        @vite(['resources/js/high-school-charts.js'])
+        @break
+    @case("Superior")
+        @vite(['resources/js/university-charts.js'])
+        @break
+@endswitch
 
 @php
     $schools=0;
@@ -22,15 +31,21 @@
     <center>
         <h2>{{ $title }} ({{ $period }})</h2>
     </center>
-    <div class="position-absolute start-50 translate-middle-x container">
+    <div class="container">
         <div class="row row-cols-2">
             <div class="col">
                 <p>Total {{ $campusesOrInstitutions }}*: {{ number_format($schools) }}</p>
                 <canvas id="schools_sustenance" class="stacked-bar-chart my-4"></canvas>
+                <div class="text-center">
+                    <button id="downloadSchoolsSustenanceBtn" class="btn boton-descarga">Descargar gráfica</button>
+                </div>
             </div>
             <div class="col">
                 <p>Total alumnos: {{ number_format($students) }}</p>
                 <canvas id="students_school_sustenance" class="stacked-bar-chart my-4"></canvas>
+                <div class="text-center">
+                    <button id="downloadStudentsSustenanceBtn" class="btn boton-descarga">Descargar gráfica</button>
+                </div>
             </div>
             <div class="col">
                 * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
@@ -66,10 +81,16 @@
             <div class="col">
                 <p>Total {{ $campusesOrInstitutions }}*: {{ number_format($schools) }}</p>
                 <canvas id="schools_sustenance_ratio"></canvas>
+                <div class="text-center mt-2">
+                    <button id="downloadSchoolsSustenanceRatioBtn" class="btn boton-descarga">Descargar gráfica</button>
+                </div>
             </div>
             <div class="col">
                 <p>Total alumnos: {{ number_format($students) }}</p>
                 <canvas id="students_school_sustenance_ratio"></canvas>
+                <div class="text-center mt-2">
+                    <button id="downloadStudentsSustenanceRatioBtn" class="btn boton-descarga">Descargar gráfica</button>
+                </div>
             </div>
             <div class="col">
                 * En el total de Escuelas de {{ $level }} se cuantifican {{ $campusesOrInstitutions }}.<br>
@@ -164,7 +185,7 @@
             }]
         }
 
-        const s1 = new Chart("students_school_sustenance", {
+        const studentsSchoolSustenanceChart = new Chart("students_school_sustenance", {
             type: "bar",
             data: students_school_sustenance,
             options: {
@@ -195,7 +216,7 @@
             }
         });
 
-        new Chart("schools_sustenance", {
+        const schoolsSustenanceChart = new Chart("schools_sustenance", {
             type: "bar",
             data: schools_sustenance,
             options: {
@@ -226,7 +247,7 @@
             }
         });
 
-        new Chart("schools_sustenance_ratio", {
+        const schoolsSustenanceRatioChart = new Chart("schools_sustenance_ratio", {
             type: "pie",
             data: schools_sustenance_ratio,
             options: {
@@ -244,7 +265,7 @@
             }
         });
 
-        new Chart("students_school_sustenance_ratio", {
+        const studentsSchoolSustenanceRatioChart = new Chart("students_school_sustenance_ratio", {
             type: "pie",
             data: students_school_sustenance_ratio,
             options: {
@@ -261,5 +282,34 @@
                 }
             }
         });
+
+        document.getElementById('downloadSchoolsSustenanceBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = schoolsSustenanceChart.toBase64Image();
+            enlace.download = `grafica-{{ $campusesOrInstitutions }}-sostenimiento-{{$period}}.png`;
+            enlace.click();
+        });
+
+        document.getElementById('downloadStudentsSustenanceBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = studentsSchoolSustenanceChart.toBase64Image();
+            enlace.download = `grafica-alumnos-sostenimiento-{{ str_replace(' ', '-', $level) }}-{{$period}}.png`;
+            enlace.click();
+        });
+
+        document.getElementById('downloadSchoolsSustenanceRatioBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = schoolsSustenanceRatioChart.toBase64Image();
+            enlace.download = `proporcion-{{ $campusesOrInstitutions }}-sostenimiento-{{$period}}.png`;
+            enlace.click();
+        });
+
+        document.getElementById('downloadStudentsSustenanceRatioBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = studentsSchoolSustenanceRatioChart.toBase64Image();
+            enlace.download = `proporcion-alumnos-sostenimiento-{{ str_replace(' ', '-', $level) }}-{{$period}}.png`;
+            enlace.click();
+        });
     </script>
+    @include('layouts.footer')
 @endsection

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css', 'resources/js/chart.js', 'resources/css/charts.css'])
+@vite(['resources/css/tables.css', 'resources/js/charts.js', 'resources/css/charts.css', 'resources/js/graficos.js'])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @php
     function calculate_percentage($number,$total){
@@ -17,8 +18,12 @@
     <center>
         <h2>Alumnos y docentes por género ({{ $period }})</h2>
     </center>
-    <div>
-    <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="datosTabla" 
+                data-filename="Alumnos-y-docentes-por-genero-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="datosTabla" class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Nivel</th>
@@ -57,7 +62,7 @@
                             {{ calculate_percentage($data['male_students'] + $data['female_students'],$totals['male_students'] + $totals['female_students']) }}%
                         </td>
                     @else
-                        <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
+                        <td class="text-center important-column">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                     @endif
                     <td class="text-center">
                         {{ number_format($data['male_students']) }}
@@ -108,22 +113,24 @@
             </tr>
         </tfoot>
     </table>
-    <div class="position-absolute start-50 translate-middle-x mt-4">
-        <div class="row">
-            <div class="col">
+    <div class="container mt-4 text-center">
+        <div class="d-flex justify-content-center">
+            <div class="btn-group" role="group">
                 <input type="radio" name="options" id="students" class="btn-check" checked>
                 <label class="btn btn-outline-primary" for="students">Alumnos</label>
-            </div>
-            <div class="col">
                 <input type="radio" name="options" id="teachers" class="btn-check">
                 <label class="btn btn-outline-primary" for="teachers">Docentes</label>
             </div>
         </div>
-        <center class="mt-4">
+        <div class="mt-4">
             <h2 id="chart-title">Alumnos por género ({{ $period }})</h2>
-        </center>
+        </div>
+        <div class="mt-2"><!--boton de descarga de grafica-->
+            <button id="descargarGraficaBtn" class="btn boton-descarga">Descargar gráfica</button>
+        </div>
         <canvas id="students_teachers_gender" class="bar-chart m-auto"></canvas>
     </div>
+    @include('layouts.footer')
     <script type="module">
         const radioButtons=document.querySelectorAll('input[type="radio"]');
         const chartTitle=document.getElementById("chart-title");
@@ -214,5 +221,13 @@
         radioButtons.forEach(radioButton => {
             radioButton.addEventListener('change', () => update_chart(radioButton.id));
         });
+
+        document.getElementById('descargarGraficaBtn').addEventListener('click', function () {
+            const enlace = document.createElement('a');
+            enlace.href = chart.toBase64Image(); // Convierte el canvas a imagen
+            enlace.download = `Alumnos-y-docentes-por-genero-{{$period}}.png`; // Nombre del archivo
+            enlace.click();
+        });
     </script>
+@include('layouts.footer')
 @endsection

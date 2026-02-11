@@ -7,7 +7,7 @@ import OutLabelsPlugin from 'chartjs-plugin-piechart-outlabels-aars';
 const font_family="'Hanken Grotesk', sans-serif";
 
 // Colores
-const colors=["#0D3760","#FF3e8d","#7CC6D8","#863399","#00AE42","#00A19B","#FF7F30","#227DAA"];
+const colors=["#1d77a3ff", "#fa9150ff","#aad8e4ff","#9fafbeff","#89c273ff","#a29aa3ff","#e7945cff","#4f5252ff"];
 
 Chart.defaults.datasets.line.pointRadius=10
 Chart.defaults.datasets.line.pointHoverRadius=10
@@ -74,17 +74,33 @@ Chart.register({
         }
     }
 });
+Chart.register({
+    id: "priorityColors",
+    beforeDatasetUpdate(chart, args, options){
+        if(chart.config.type=="pie"){
+            const dataset = chart.data.datasets[args.index];
+            const values = dataset.data;
+            const colors=options.colors;
+            if(!Array.isArray(values) || !Array.isArray(colors)) return;
+            const order =values.map((v,i) => ({value: v, index: i}));
+            order.sort((a,b)=>b.value-a.value);
+            const result = new Array(values.length);
+            order.forEach((item,i)=>{
+                result[item.index]=colors[i%colors.length];
+            });
+            dataset.backgroundColor=result;
+        }
+    }
+});
+Chart.defaults.plugins.priorityColors.colors=colors;
 Chart.defaults.plugins.outlabels={
     percentPrecision: 3,
     valuePrecision: 3,
-    backgroundColor: colors, // Background color of Label
-    borderColor: colors, // Border color of Label
     borderRadius: 5, // Border radius of Label
     borderWidth: 0, // Thickness of border
     color: 'white', // Font color
     display: true,
     lineWidth: 1, // Thickness of line between chart arc and Label
-    lineColor: colors,
     padding: 5,
     stretch: 50, // The length between chart arc and Label
     text: (ctx) => {

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@vite(['resources/css/tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/tables.css','resources/js/charts.js','resources/css/charts.css', 'resources/js/graficos.js'])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @php
     $route=request()->route()->uri();
@@ -13,8 +14,15 @@
     <center>
         <h2>Estadística de inicio de ciclo escolar {{ $period }}</h2>
     </center>
-    <table class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn descargar-tabla-btn boton-descarga" 
+                data-target-id="datosTabla"
+                data-filename="tabla-inicio-ciclo-{{$period}}.png">Descargar tabla como imagen</button>
+    </div>
+
+    <table id="datosTabla" class="table table-bordered border-black mt-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
+            
             <tr>
                 <th rowspan="2">Tipo educativo</th>
                 <th colspan="3">Escuelas</th>
@@ -51,15 +59,15 @@
                             $schools_total+=$data['school_count'];
                         }
                     @endphp
-                    <td class="text-center fw-bold">{{ number_format($schools_total) }}</td>
+                    <td class="text-center fw-bold important-col ">{{ number_format($schools_total) }}</td>
                     @foreach ($controls as $control => $data)
                         <td class="text-center">{{ number_format($data['school_count']) }}</td>
                     @endforeach
-                    <td class="text-center fw-bold">{{ number_format($students_total) }}</td>
+                    <td class="text-center fw-bold important-col ">{{ number_format($students_total) }}</td>
                     @foreach ($controls as $control => $data)
                         <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                     @endforeach
-                    <td class="text-center fw-bold">{{ number_format($teachers_total) }}</td>
+                    <td class="text-center fw-bold important-col ">{{ number_format($teachers_total) }}</td>
                     @foreach ($controls as $control => $data)
                         <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
                     @endforeach
@@ -77,15 +85,15 @@
                         $schools_total+=$data['school_count'];
                     }
                 @endphp
-                <td class="text-center">{{ number_format($schools_total) }}</td>
+                <td class="text-center important-col ">{{ number_format($schools_total) }}</td>
                 @foreach ($basic_ini_totals as $control => $data)
                     <td class="text-center">{{ number_format($data['school_count']) }}</td>
                 @endforeach
-                <td class="text-center">{{ number_format($students_total) }}</td>
+                <td class="text-center important-col ">{{ number_format($students_total) }}</td>
                 @foreach ($basic_ini_totals as $control => $data)
                     <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
                 @endforeach
-                <td class="text-center">{{ number_format($teachers_total) }}</td>
+                <td class="text-center important-col ">{{ number_format($teachers_total) }}</td>
                 @foreach ($basic_ini_totals as $control => $data)
                     <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
                 @endforeach
@@ -116,33 +124,31 @@
                 @endforeach
             </tr>
             @foreach ($university_statistics as $type => $controls)
-                @if ($type!="Escuelas")
-                    <tr>
-                        <td>{{ $type }}</td>
-                        @php
-                            $students_total=0;
-                            $teachers_total=0;
-                            $schools_total=0;
-                            foreach ($controls as $control => $data) {
-                                $students_total+=$data['male_students'] + $data['female_students'];
-                                $teachers_total+=$data['male_teachers'] + $data['female_teachers'];
-                                $schools_total+=$data['school_count'];
-                            }
-                        @endphp
-                        <td class="text-center fw-bold">{{ number_format($schools_total) }}</td>
-                        @foreach ($controls as $control => $data)
-                            <td class="text-center">{{ number_format($data['school_count']) }}</td>
-                        @endforeach
-                        <td class="text-center fw-bold">{{ number_format($students_total) }}</td>
-                        @foreach ($controls as $control => $data)
-                            <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
-                        @endforeach
-                        <td class="text-center fw-bold">{{ number_format($teachers_total) }}</td>
-                        @foreach ($controls as $control => $data)
-                            <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
-                        @endforeach
-                    </tr>
-                @endif
+                <tr>
+                    <td>{{ $type }}</td>
+                    @php
+                        $students_total=0;
+                        $teachers_total=0;
+                        $schools_total=0;
+                        foreach ($controls as $control => $data) {
+                            $students_total+=$data['male_students'] + $data['female_students'];
+                            $teachers_total+=$data['male_teachers'] + $data['female_teachers'];
+                            $schools_total+=$data['school_count'];
+                        }
+                    @endphp
+                    <td class="text-center fw-bold important-col ">{{ number_format($schools_total) }}</td>
+                    @foreach ($controls as $control => $data)
+                        <td class="text-center">{{ number_format($data['school_count']) }}</td>
+                    @endforeach
+                    <td class="text-center fw-bold important-col ">{{ number_format($students_total) }}</td>
+                    @foreach ($controls as $control => $data)
+                        <td class="text-center">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
+                    @endforeach
+                    <td class="text-center fw-bold important-col ">{{ number_format($teachers_total) }}</td>
+                    @foreach ($controls as $control => $data)
+                        <td class="text-center">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
+                    @endforeach
+                </tr>
             @endforeach
             <tr class="important-row">
                 <td>Total Superior **</td>
@@ -182,4 +188,5 @@
             </tr>
         </tfoot>
     </table>
+    @include('layouts.footer')
 @endsection

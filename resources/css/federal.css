@@ -1,0 +1,22 @@
+.table.qro-table-header thead {
+    --bs-table-bg: #242020;
+    --bs-table-color: #fff;
+}
+
+.table tr.important-row {
+    --bs-table-bg: #6e7177;
+    --bs-table-color: #fff;
+    font-weight: bold;
+}
+
+.table td.important-col {
+    --bs-table-bg: #6e7177;
+    --bs-table-color: #fff;
+    font-weight: bold;
+}
+
+.table td.important-column {
+    --bs-table-bg: #007481;
+    --bs-table-color: #fff;
+    font-weight: bold;
+}

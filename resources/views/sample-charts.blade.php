@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @vite(['resources/js/chart.js'])
+        @vite(['resources/js/charts.js'])
         @vite(['resources/js/sample-charts-generator.js'])
     </head>
     <body>

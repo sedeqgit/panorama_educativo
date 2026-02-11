@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@vite(['resources/css/university-tables.css','resources/js/chart.js','resources/css/charts.css'])
+@vite(['resources/css/university-tables.css','resources/js/charts.js','resources/css/charts.css', 'resources/js/graficos.js' ])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 @php
     $totals=[];
@@ -17,9 +18,14 @@
 
 @section('content')
     <center>
-        <h2>Carreras, matrículas, nuevo ingreso y egreso por campo de formación de {{ $type }} ({{ $period }})</h2>
+        <h2>Carreras, matrículas, nuevo ingreso y egreso por campo de formación de {{ $type }} ({{ $period }}).</h2>
     </center>
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="datosTabla" 
+                data-filename="carreras-formacion-{{$type}}-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="datosTabla" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th rowspan="2">Subsistema</th>
@@ -110,10 +116,17 @@
             </tr>
         </tfoot>
     </table>
+
+    
     <center>
         <h3>Porcentaje por campo de formación</h3>
     </center>
-    <table class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
+    <div class="text-center my-3">
+        <button class="btn boton-descarga descargar-tabla-btn" 
+                data-target-id="datosTabla2" 
+                data-filename="Porcentaje-por-formacion-{{$type}}-{{$period}}.png">Descargar tabla</button>
+    </div>
+    <table id="datosTabla2" class="table table-bordered border-black my-4 m-auto w-auto qro-table-header align-middle">
         <thead class="text-center align-middle">
             <tr>
                 <th>Subsistema</th>
@@ -153,4 +166,6 @@
                 </td>
             </tr>
         </tfoot>
+    </table>
+    @include('layouts.footer')
 @endsection

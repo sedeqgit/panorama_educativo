@@ -9,8 +9,14 @@
     font-weight: bold;
 }
 
-.table td.important-column {
+.table td.important-col {
     --bs-table-bg: #4996C6;
     --bs-table-color: #fff;
+    font-weight: bold;
+}
+
+.table td.important-column {
+    --bs-table-bg: #4996C6;
+    --bs-table-color: #ffffff;
     font-weight: bold;
 }
