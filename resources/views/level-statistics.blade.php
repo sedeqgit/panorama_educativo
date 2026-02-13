@@ -306,29 +306,91 @@
                 <th rowspan="2">Nivel / Municipio</th>
                 <th colspan="3">Alumnos</th>
                 @if ($level=="Superior" || $level=="Media Superior")
+                    @if ($level=="Superior")
                     <th colspan="3">Docentes *</th>
                     <th colspan="3">Escuelas **</th>
+                    <th colspan="3">Escuelas/instituciones **</th>
+                    @else
+                    <th colspan="3">Docentes *</th>
+                    <th rowspan="2">grupos</th>
+                    <th rowspan="2">aulas</th>
+                    <th colspan="3">Escuelas **</th>
+                    @endif
                 @else
                     <th colspan="3">Docentes</th>
+                    <th rowspan="2">grupos</th>
+                    <th rowspan="2">aulas</th>
                     <th colspan="3">Escuelas</th>
                 @endif
-                <th rowspan="2">grupos</th>
-                <th rowspan="2">aulas</th>
+                
             </tr>
             <tr>
-                <th>Total</th>
-                <th>Hombres</th>
-                <th>Mujeres</th>
-                <th>Total</th>
-                <th>Hombres</th>
-                <th>Mujeres</th>
-                <th>Total</th>
-                <th>Públicas</th>
-                <th>Privadas</th>
+                @if ($level=="Superior")
+                    <th>Total</th>
+                    <th>Hombres</th>
+                    <th>Mujeres</th>
+                    <th>Total</th>
+                    <th>Hombres</th>
+                    <th>Mujeres</th>
+                    <th>Total</th>
+                    <th>Públicas</th>
+                    <th>Privadas</th>
+                    <th>Total</th>
+                    <th>Públicas</th>
+                    <th>Privadas</th>
+                @else
+                    <th>Total</th>
+                    <th>Hombres</th>
+                    <th>Mujeres</th>
+                    <th>Total</th>
+                    <th>Hombres</th>
+                    <th>Mujeres</th>
+                    <th>Total</th>
+                    <th>Públicas</th>
+                    <th>Privadas</th>
+                @endif
+                
             </tr>
         </thead>
         <tbody>
-            <tr class="important-row">
+            <!--<tr class="important-row">
+                <td>{{ $level }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['male_students'] + $totals2['female_students']) }}</td>
+                <td class="text-center">{{ number_format($totals2['male_students']) }}</td>
+                <td class="text-center">{{ number_format($totals2['female_students']) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['male_teachers'] + $totals2['female_teachers']) }}</td>
+                <td class="text-center">{{ number_format($totals2['male_teachers']) }}</td>
+                <td class="text-center">{{ number_format($totals2['female_teachers']) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['groups'] ?? 0) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['aulas'] ?? 0) }}</td>
+                <td class="text-center ">{{ number_format($totals2['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals1['Público']['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals1['Privado']['school_count']) }}</td>
+
+            </tr>
+            @foreach ($stats3 as $municipality => $data)
+                @if (($data['male_students']+$data['female_students'])>0)
+                    <tr>
+                        <td>{{ $municipality }}</td>
+                        <td class="text-center important-col">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
+                        <td class="text-center">{{ number_format($data['male_students']) }}</td>
+                        <td class="text-center">{{ number_format($data['female_students']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
+                        <td class="text-center">{{ number_format($data['male_teachers']) }}</td>
+                        <td class="text-center">{{ number_format($data['female_teachers']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['groups'] ?? 0) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['aulas'] ?? 0) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($stats4[$municipality]['Público']['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($stats4[$municipality]['Privado']['school_count']) }}</td>
+
+                    </tr>
+                @endif
+            @endforeach
+                -->
+
+         @if ($level=="Superior")
+                <tr class="important-row">
                 <td>{{ $level }}</td>
                 <td class="text-center important-col">{{ number_format($totals2['male_students'] + $totals2['female_students']) }}</td>
                 <td class="text-center">{{ number_format($totals2['male_students']) }}</td>
@@ -339,8 +401,10 @@
                 <td class="text-center ">{{ number_format($totals2['school_count']) }}</td>
                 <td class="text-center">{{ number_format($totals1['Público']['school_count']) }}</td>
                 <td class="text-center">{{ number_format($totals1['Privado']['school_count']) }}</td>
-                <td class="text-center">{{ number_format($totals2['groups'] ?? 0) }}</td>
-                <td class="text-center">{{ number_format($totals2['aulas'] ?? 0) }}</td>
+                <td class="text-center ">{{ number_format($totals2['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals1['Público']['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals1['Privado']['school_count']) }}</td>
+
             </tr>
             @foreach ($stats3 as $municipality => $data)
                 @if (($data['male_students']+$data['female_students'])>0)
@@ -355,11 +419,49 @@
                         <td class="text-center important-col">{{ number_format($data['school_count']) }}</td>
                         <td class="text-center">{{ number_format($stats4[$municipality]['Público']['school_count']) }}</td>
                         <td class="text-center">{{ number_format($stats4[$municipality]['Privado']['school_count']) }}</td>
-                        <td class="text-center">{{ number_format($data['groups'] ?? 0) }}</td>
-                        <td class="text-center">{{ number_format($data['aulas'] ?? 0) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($stats4[$municipality]['Público']['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($stats4[$municipality]['Privado']['school_count']) }}</td>
+
                     </tr>
                 @endif
             @endforeach
+         @else
+             <tr class="important-row">
+                <td>{{ $level }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['male_students'] + $totals2['female_students']) }}</td>
+                <td class="text-center">{{ number_format($totals2['male_students']) }}</td>
+                <td class="text-center">{{ number_format($totals2['female_students']) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['male_teachers'] + $totals2['female_teachers']) }}</td>
+                <td class="text-center">{{ number_format($totals2['male_teachers']) }}</td>
+                <td class="text-center">{{ number_format($totals2['female_teachers']) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['groups'] ?? 0) }}</td>
+                <td class="text-center important-col">{{ number_format($totals2['aulas'] ?? 0) }}</td>
+                <td class="text-center ">{{ number_format($totals2['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals1['Público']['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals1['Privado']['school_count']) }}</td>
+
+            </tr>
+            @foreach ($stats3 as $municipality => $data)
+                @if (($data['male_students']+$data['female_students'])>0)
+                    <tr>
+                        <td>{{ $municipality }}</td>
+                        <td class="text-center important-col">{{ number_format($data['male_students'] + $data['female_students']) }}</td>
+                        <td class="text-center">{{ number_format($data['male_students']) }}</td>
+                        <td class="text-center">{{ number_format($data['female_students']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['male_teachers'] + $data['female_teachers']) }}</td>
+                        <td class="text-center">{{ number_format($data['male_teachers']) }}</td>
+                        <td class="text-center">{{ number_format($data['female_teachers']) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['groups'] ?? 0) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['aulas'] ?? 0) }}</td>
+                        <td class="text-center important-col">{{ number_format($data['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($stats4[$municipality]['Público']['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($stats4[$municipality]['Privado']['school_count']) }}</td>
+
+                    </tr>
+                @endif
+            @endforeach
+         @endif
         </tbody>
         </table>
     </div>

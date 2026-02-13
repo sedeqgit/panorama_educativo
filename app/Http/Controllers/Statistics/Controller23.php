@@ -262,6 +262,7 @@ class Controller23 extends Base
                         "male_teachers" => "0",
                         "female_teachers" => "0",
                         "carriers" => "cv_carrera",
+                        //"instituciones" => "COUNT(DISTINCT cv_cct)",
                         "groups" => "0"
                     ]
                 ],
@@ -273,6 +274,7 @@ class Controller23 extends Base
                         "male_teachers" => "0",
                         "female_teachers" => "0",
                         "carriers" => "cv_carrera",
+                        //"instituciones" => "COUNT(cct_ins_pla)",
                         "groups" => "0"
                     ]
                 ],
@@ -284,6 +286,7 @@ class Controller23 extends Base
                         "male_teachers" => "0",
                         "female_teachers" => "0",
                         "carriers" => "cv_carrera",
+                        //"instituciones" => "COUNT(cct_ins_pla)",
                         "groups" => "0"
                     ]
                 ],
@@ -295,6 +298,7 @@ class Controller23 extends Base
                         "male_teachers" => "0",
                         "female_teachers" => "0",
                         "carriers" => "cv_carrera",
+                        //"instituciones" => "COUNT(cct_ins_pla)",
                         "groups" => "0"
                     ]
                 ],
@@ -306,6 +310,7 @@ class Controller23 extends Base
                         "male_teachers" => "0",
                         "female_teachers" => "0",
                         "carriers" => "cv_carrera",
+                        //"instituciones" => "SUM(cct_ins_pla)",
                         "groups" => "0"
                     ]
                 ]
