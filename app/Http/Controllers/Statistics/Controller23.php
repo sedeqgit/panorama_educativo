@@ -43,7 +43,7 @@ class Controller23 extends Base
                         "aulas" => "v432"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Inicial (No escolarizado)"=> [
                 "Comunitario"=>[
                 $this->ini_comuni =>[
@@ -68,7 +68,7 @@ class Controller23 extends Base
                         //"aulas" => "v295"
                     ] 
                 ]
-            ],
+            ],//grupo y aulas contados
             "Especial (CAM)"=> [
                 "total" => [
                     $this->esp_cam => [
@@ -81,7 +81,7 @@ class Controller23 extends Base
                         "aulas" => "V2692"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Especial (USAER)"=> [
                 "total"=> [
                     $this->esp_usaer => [
@@ -103,7 +103,7 @@ class Controller23 extends Base
                         "groups" => "0"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Preescolar" => [
                 "General" => [
                     $this->ini_gral => [
@@ -112,7 +112,7 @@ class Controller23 extends Base
                         "female_students" => "V472",
                         "male_teachers" => "V513+V520+V527",
                         "female_teachers" => "V514+V521+V528",
-                        "groups" => "V479",
+                        //"groups" => "V479",
                         //"aulas" => "v295"
                     ],
                     $this->pree_gral => [
@@ -121,8 +121,8 @@ class Controller23 extends Base
                         "female_students" => "V171",
                         "male_teachers" => "V859+V867",
                         "female_teachers" => "V860+V868",
-                        "groups" => "V182",
-                        "aulas" => "v935+v940+v945"
+                        "groups" => "V182+v181",
+                        "aulas" => "v935"
                     ]
                 ],
                 "Comunitario"=> [
@@ -143,11 +143,11 @@ class Controller23 extends Base
                         "female_students" => "V171",
                         "male_teachers" => "V795+V803",
                         "female_teachers" => "V796+V804",
-                        "groups" => "V182",
-                        "aulas" => "v864+v869+v874"
+                        "groups" => "V182+v181",
+                        "aulas" => "v864"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Primaria" => [
                 "General" => [
                     $this->prim_gral => [
@@ -182,7 +182,7 @@ class Controller23 extends Base
                         "aulas" => "v1569"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Secundaria" => [
                 "General" => [
                     $this->sec_gral => [
@@ -191,7 +191,8 @@ class Controller23 extends Base
                         "female_students" => "V323+V331",
                         "male_teachers" => "V1297+V1303+V1307+V1309+V1311+V1313",
                         "female_teachers" => "V1298+V1304+V1308+V1310+V1312+V1314",
-                        "groups" => "V341"
+                        "groups" => "V341",
+                        "aulas" => "v1421"
                     ]
                 ],
                 "Telesecundaria" => [
@@ -201,7 +202,7 @@ class Controller23 extends Base
                         "female_students" => "V323+V331",
                         "male_teachers" => "V1297+V1303+V1307+V1309+V1311+V1313",
                         "female_teachers" => "V1298+V1304+V1308+V1310+V1312+V1314",
-                        "groups" => "V341"
+                        "groups" => "V813"
                     ]
                 ],
                 "Técnica" => [
@@ -211,7 +212,7 @@ class Controller23 extends Base
                         "female_students" => "V323+V331",
                         "male_teachers" => "V1297+V1303+V1307+V1309+V1311+V1313",
                         "female_teachers" => "V1298+V1304+V1308+V1310+V1312+V1314",
-                        "groups" => "V341"
+                        //"groups" => "V341"
                     ]
                 ],
                 "Comunitario" => [
@@ -221,10 +222,12 @@ class Controller23 extends Base
                         "female_students" => "V240+V248",
                         "male_teachers" => "V384",
                         "female_teachers" => "V385",
-                        "groups" => "COUNT(cv_cct)"
+                        //"groups" => "COUNT(cv_cct)"
+                        "groups" => "Sum(V386)",
+                        "aulas" => "V386"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Media Superior"=> [
                 "Bachillerato General" => [
                     $this->ms_gral => [
@@ -233,7 +236,9 @@ class Controller23 extends Base
                         "female_students" => "V396",
                         "male_teachers" => "V958",
                         "female_teachers" => "V959",
-                        "groups" => "V401"
+                        "groups" => "V401",
+                        //"aulas" => "v406+v407+v405"
+                        "aulas" => "v430"
                     ]
                 ],
                 "Bachillerato Tecnológico"=> [
@@ -243,10 +248,11 @@ class Controller23 extends Base
                         "female_students" => "V471",
                         "male_teachers" => "V1057",
                         "female_teachers" => "V1058",
-                        "groups" => "V476"
+                        "groups" => "V476",
+                        "aulas" => "v430"
                     ]
                 ]
-            ],
+            ],//grupo y aulas contados
             "Superior"=> [
                 "Técnico Superior Universitario" => [
                     $this->sup_carrera => [
