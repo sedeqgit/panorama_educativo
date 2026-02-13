@@ -7,7 +7,7 @@ import OutLabelsPlugin from 'chartjs-plugin-piechart-outlabels-aars';
 const font_family="'Hanken Grotesk', sans-serif";
 
 // Colores
-const colors=["#fac532ff","#e4942cff","#744e07ff","#98cf82ff","#d39647ff","#00AE42","#00A19B","#FF7F30","#227DAA"];
+const colors=["#ffd700","#e4942cff","#744e07ff","#98cf82ff","#d39647ff","#00AE42","#00A19B","#FF7F30","#227DAA"];
 
 Chart.defaults.datasets.line.pointRadius=10
 Chart.defaults.datasets.line.pointHoverRadius=10

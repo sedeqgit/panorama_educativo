@@ -312,6 +312,8 @@
                     <th colspan="3">Docentes</th>
                     <th colspan="3">Escuelas</th>
                 @endif
+                <th rowspan="2">grupos</th>
+                <th rowspan="2">aulas</th>
             </tr>
             <tr>
                 <th>Total</th>
@@ -337,6 +339,8 @@
                 <td class="text-center ">{{ number_format($totals2['school_count']) }}</td>
                 <td class="text-center">{{ number_format($totals1['Público']['school_count']) }}</td>
                 <td class="text-center">{{ number_format($totals1['Privado']['school_count']) }}</td>
+                <td class="text-center">{{ number_format($totals2['groups'] ?? 0) }}</td>
+                <td class="text-center">{{ number_format($totals2['aulas'] ?? 0) }}</td>
             </tr>
             @foreach ($stats3 as $municipality => $data)
                 @if (($data['male_students']+$data['female_students'])>0)
@@ -351,6 +355,8 @@
                         <td class="text-center important-col">{{ number_format($data['school_count']) }}</td>
                         <td class="text-center">{{ number_format($stats4[$municipality]['Público']['school_count']) }}</td>
                         <td class="text-center">{{ number_format($stats4[$municipality]['Privado']['school_count']) }}</td>
+                        <td class="text-center">{{ number_format($data['groups'] ?? 0) }}</td>
+                        <td class="text-center">{{ number_format($data['aulas'] ?? 0) }}</td>
                     </tr>
                 @endif
             @endforeach

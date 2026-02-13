@@ -17,7 +17,9 @@ class Controller23 extends Base
                         "female_students" => "V394+V410",
                         "male_teachers" => "V509+V516+V523+V511+V518+V525",
                         "female_teachers" => "V510+V517+V524+V512+V519+V526",
-                        "groups" => "V402+V418"
+                        "groups" => "V402+V418",                        
+                        "aulas" => "v740+v735+v745+v746+v751+v756+v757+v762"
+                        
                     ]
                 ],
                 "gral_dir"=> [
@@ -37,7 +39,8 @@ class Controller23 extends Base
                         "female_students" => "V184",
                         "male_teachers" => "V211",
                         "female_teachers" => "V212",
-                        "groups" => "0"
+                        "groups" => "v100",
+                        "aulas" => "v432"
                     ]
                 ]
             ],
@@ -49,7 +52,9 @@ class Controller23 extends Base
                         "female_students" => "V80",
                         "male_teachers" => "V124",
                         "female_teachers" => "V125",
-                        "groups" => "COUNT(cv_cct)"
+                        "groups" => "COUNT(cv_cct)",
+                        //"aulas" => "v127+v128+v129+v130+v131+v132"
+
                     ]
                 ],
                 "total"=> [
@@ -59,7 +64,8 @@ class Controller23 extends Base
                         "female_students" => "V80+V130",
                         "male_teachers" => "V124+V183",
                         "female_teachers" => "V125+V184",
-                        "groups" => "V143"
+                        "groups" => "V100",
+                        //"aulas" => "v295"
                     ] 
                 ]
             ],
@@ -71,7 +77,8 @@ class Controller23 extends Base
                         "female_students" => "V2256",
                         "male_teachers" => "V2311+V2319+V2327+V2335+V2343+V2351+V2359+V2367+V2375+V2383+V2391+V2399+V2407+V2415+V2423+V2431+V2440+V2449+V2458+V2467+V2476+V2485+V2494",
                         "female_teachers" => "V2312+V2320+V2328+V2336+V2344+V2352+V2360+V2368+V2376+V2384+V2392+V2400+V2408+V2416+V2424+V2432+V2441+V2450+V2459+V2468+V2477+V2486+V2495",
-                        "groups" => "V1343+V1418+V1511+V1586+V1765"
+                        "groups" => "V1343+V1418+V1511+V1586+V1765",
+                        "aulas" => "V2692"
                     ]
                 ]
             ],
@@ -105,7 +112,8 @@ class Controller23 extends Base
                         "female_students" => "V472",
                         "male_teachers" => "V513+V520+V527",
                         "female_teachers" => "V514+V521+V528",
-                        "groups" => "V479"
+                        "groups" => "V479",
+                        //"aulas" => "v295"
                     ],
                     $this->pree_gral => [
                         "school_count" => "COUNT(cv_cct)",
@@ -113,7 +121,8 @@ class Controller23 extends Base
                         "female_students" => "V171",
                         "male_teachers" => "V859+V867",
                         "female_teachers" => "V860+V868",
-                        "groups" => "V182"
+                        "groups" => "V182",
+                        "aulas" => "v935+v940+v945"
                     ]
                 ],
                 "Comunitario"=> [
@@ -123,7 +132,8 @@ class Controller23 extends Base
                         "female_students" => "V91",
                         "male_teachers" => "V149",
                         "female_teachers" => "V150",
-                        "groups" => "COUNT(cv_cct)-SUM(V78)"
+                        "groups" => "COUNT(cv_cct)-SUM(V78)",
+                        "aulas" => "v151"
                     ]
                 ],
                 "Indígena" => [
@@ -133,7 +143,8 @@ class Controller23 extends Base
                         "female_students" => "V171",
                         "male_teachers" => "V795+V803",
                         "female_teachers" => "V796+V804",
-                        "groups" => "V182"
+                        "groups" => "V182",
+                        "aulas" => "v864+v869+v874"
                     ]
                 ]
             ],
@@ -145,7 +156,8 @@ class Controller23 extends Base
                         "female_students" => "V585+V596",
                         "male_teachers" => "V1575+V1567",
                         "female_teachers" => "V1576+V1568",
-                        "groups" => "V616"
+                        "groups" => "V616+V615",
+                        "aulas" => "v1703"
                     ]
                 ],
                 "Comunitario" => [
@@ -155,7 +167,8 @@ class Controller23 extends Base
                         "female_students" => "V492+V503",
                         "male_teachers" => "V583",
                         "female_teachers" => "V584",
-                        "groups" => "COUNT(cv_cct)"
+                        "groups" => "COUNT(cv_cct)",
+                        "aulas" => "v585"
                     ]
                 ],
                 "Indígena" => [
@@ -165,7 +178,8 @@ class Controller23 extends Base
                         "female_students" => "V587+V598",
                         "male_teachers" => "V1507+V1499",
                         "female_teachers" => "V1508+V1500",
-                        "groups" => "V1052"
+                        "groups" => "V1052+V1051",
+                        "aulas" => "v1569"
                     ]
                 ]
             ],

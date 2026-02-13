@@ -8,27 +8,34 @@
     <title>Error 404 - Página no encontrada</title>
 </head>
 <body>
-    <div class="row vh-100 align-items-center justify-content-center">
-         <div class="row">
-            <div class="col-12 text-center">
-                <img src="{{ asset("images/logo.png") }}" style="height:100px; margin: 25px;">
-                <h1>Error 404</h1>
-                <p>No se ha encontrado la página.</p>
-                <p>Será redirigido al inicio en <span id="counter">5</span> segundos.</p>
+    <div class="container d-flex vh-100">
+        <div class="row align-items-center justify-content-center w-100">
+            <div class="col-12 col-md-8 text-center">
+                <img src="{{ asset("images/logo.png") }}" alt="Logo del sitio" class="error-page-logo">
+                <h1 class="display-1 fw-bold">404</h1>
+                <h2>Página no encontrada</h2>
+                <p class="lead">Lo sentimos, la página que buscas no existe o ha sido movida.</p>
+                <p>Serás redirigido al inicio en <span id="counter" aria-live="polite">5</span> segundos.</p>
+                <a href="{{ url('/') }}" class="btn btn-primary mt-3">Volver al inicio</a>
             </div>
-         </div>
+        </div>
     </div>
 </body>
 <script>
-    let counter=5;
-    const el=document.getElementById("counter");
-    const interval=setInterval(()=>{
-        counter--;
-        el.textContent=counter;
-        if (counter<=0){
-            clearInterval(interval);
-            window.location.href="{{ route("welcome-page") }}";
+    (function() {
+        let counter = 5;
+        const counterElement = document.getElementById("counter");
+
+        if (counterElement) {
+            const interval = setInterval(() => {
+                counter--;
+                counterElement.textContent = counter;
+                if (counter <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "{{ url('/') }}";
+                }
+            }, 1000);
         }
-    }, 1000);
+    })();
 </script>
 </html>

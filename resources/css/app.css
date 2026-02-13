@@ -284,3 +284,9 @@ body {
         height: 250px; /* Una altura más adecuada para móviles */
     }
 }
+
+/* Estilos para la página de error */
+.error-page-logo {
+    height: 100px;
+    margin: 25px;
+}
